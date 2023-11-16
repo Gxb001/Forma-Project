@@ -5,24 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CROSL Formations - Catalogue</title>
-    <link rel="stylesheet" href="..//CSS//style_catalogue.css">
+    <link rel="stylesheet" href="Styles/style_catalogue.css">
 </head>
 
 <body>
 
-    <header>
-        <a href="../HTML/accueil.html">
-            <img src="../IMG/logo.png" alt="Logo CROSL">
-        </a>
-    </header>
-
-    <nav>
-        <a href="..//HTML/accueil.html">Accueil</a>
-        <a href="..//HTML/catalogue.html">Catalogue</a>
-        <a href="..//HTML/connexion.html">Inscriptions</a>
-        <a href="..//HTML/administration.html">Administration</a>
-        <a href="#">Contact</a>
-    </nav>
+<?php
+include 'includes/header.html.php';
+include 'includes/navbar.html.php';
+?>
 
     <section>
         <h2>Catalogue des Formations</h2>
