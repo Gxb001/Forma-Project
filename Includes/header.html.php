@@ -1,12 +1,66 @@
-<link rel="stylesheet" href="../Styles/header.css">
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Votre Titre</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #logo {
+            flex: 1;
+            max-width: 200px;
+            height: auto;
+        }
+
+        #buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 8px 16px;
+            background-color: #fff;
+            color: #333;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
 <header>
-    <div class="logo-container">
-        <a href="../accueil.html.php">
-            <img src="Medias/logo.png" alt="Logo CROSL">
-        </a>
-    </div>
-    <div class="connexion-inscription">
-        <a href="connexion.html.php" class="bouton-connexion">Connexion</a>
-        <a href="inscription.html.php" class="bouton-inscription">Inscription</a>
+    <img id="logo" src="Medias/logo.png" alt="Logo">
+    <div id="buttons">
+        <button onclick="redirectToLogin()">Se connecter</button>
+        <button onclick="redirectToSignUp()">S'inscrire</button>
     </div>
 </header>
+</body>
+<script>
+    function redirectToLogin() {
+        window.location.href = 'connexion.html.php';
+    }
+
+    function redirectToSignUp() {
+        window.location.href = 'inscription.html.php';
+    }
+</script>
+</html>
