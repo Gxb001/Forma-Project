@@ -12,10 +12,9 @@
 include 'includes/header.html.php';
 include 'includes/navbar.html.php';
 ?>
-
 <section>
     <h2>Connexion</h2>
-    <form action="traitement_connexion.php" method="post">
+    <form action="Functions/VerifConnexion.php" method="post">
         <input type="email" id="email" name="email" required placeholder="Email">
         <input type="password" id="mdp" name="mdp" required placeholder="Mot De Passe">
         </select>
@@ -26,5 +25,4 @@ include 'includes/navbar.html.php';
 include 'includes/footer.html';
 ?>
 </body>
-
 </html>
