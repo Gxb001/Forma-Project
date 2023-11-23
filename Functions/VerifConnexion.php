@@ -3,7 +3,7 @@ include("Bd_connect.php");
 $email = $_POST['email'];
 $password = $_POST['mdp'];
 
-$sql = "SELECT * FROM utilisateurs WHERE email = '$email'";
+$sql = "SELECT mdp, email, statut FROM utilisateurs WHERE email = '$email'";
 $result = $connexion->query($sql);
 $ligne = $result->fetch();
 if ($ligne) {
@@ -13,8 +13,8 @@ if ($ligne) {
     } else if (CheckPasswordHash($mdp, $motPasseBdd)) {
         session_start();
         $_SESSION['user'] = "authentified";
-        $_SESSION['email'] = ligne['email'];
-        $_SESSION['role'] = ligne['statut'];
+        $_SESSION['email'] = $ligne['email'];
+        $_SESSION['role'] = $ligne['statut'];
         header("Location: accueil.html.php");
         // On quitte le script courant
         exit;

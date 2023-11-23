@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CROSL Formations - Catalogue</title>
     <link rel="stylesheet" href="Styles/style_catalogue.css">
+    <link rel="stylesheet" href="Styles/Font.css">
 </head>
 
 <body>
