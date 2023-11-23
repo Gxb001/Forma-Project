@@ -1,0 +1,23 @@
+/* Styles spécifiques pour la page de catalogue */
+h2 {
+    color: #333; /* Couleur de titre principale */
+}
+
+.formation {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+button {
+    background-color: #555;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #333;
+}
