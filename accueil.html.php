@@ -15,7 +15,7 @@ include 'includes/navbar.html.php';
 ?>
 <section>
     <h2>Bienvenue au CROSL Formations</h2>
-    <p>Découvrez notre catalogue de formations et inscrivez-vous pour enrichir vos connaissances!</p>
+    <p>Découvrez notre catalogue de formations et inscrivez-vous pour enrichir vos connaissances !</p>
 </section>
 </body>
 <?php

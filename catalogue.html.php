@@ -26,7 +26,17 @@ include 'includes/navbar.html.php';
         <p>Lieu: Maison Régionale des Sports, Lorraine</p>
         <p>Intervenant: M. Expert Juridique</p>
         <p>Coût: 50€ par participant</p>
-        <button>Inscription</button>
+        <?php
+        if (isset($_SESSION['user'])) {
+            echo '<button>Inscription</button>';
+        }
+        /*if(fonctionveriflesinscriptionsduclient()){
+            echo '<button>Se désinscrire</button>';
+        }
+        if(fonctionquiverifiequiaplusdeplace()){
+            echo '<button disabled>S\'inscrire</button>';
+        }*/
+        ?>
     </div>
 
     <!-- Exemple de formation 2 -->
@@ -38,8 +48,6 @@ include 'includes/navbar.html.php';
         <p>Coût: 40€ par participant</p>
         <button>Inscription</button>
     </div>
-
-    <!-- Ajoute d'autres formations selon le même modèle -->
 
 </section>
 
