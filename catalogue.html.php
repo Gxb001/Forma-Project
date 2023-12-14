@@ -14,47 +14,58 @@
 <?php
 include 'includes/header.html.php';
 include 'includes/navbar.html.php';
+include 'Functions/functions.php';
 ?>
 
 <section>
     <h2>Catalogue des Formations</h2>
+    <?php
+    //recuperation des formations
+    $formations = getFormations();
+    //affichage des formations, libelle, cout, contenu, objectif et nombre de place
+    if (count($formations->fetchall()) == 0) {
+        echo '<p>Nous avons aucune formations à vous proposer à ce jour</p>';
+        echo '<button onclick="redirectToAccueil()">Retour à l\'accueil</button>';
+    } else {
+        //afficher le domaine de la formation (trier)
 
-    <!-- Exemple de formation 1 -->
-    <div class="formation">
-        <h3>Formation sur la législation sportive</h3>
-        <p>Date: 15-17 janvier 2024</p>
-        <p>Lieu: Maison Régionale des Sports, Lorraine</p>
-        <p>Intervenant: M. Expert Juridique</p>
-        <p>Coût: 50€ par participant</p>
-        <?php
-        if (isset($_SESSION['user'])) {
-            echo '<button>Inscription</button>';
+        foreach ($formations as $formation) {
+            echo '<div class="formation">';
+            echo '<h3>' . $formation['libelle_formation'] . '</h3>';
+            echo '<p>Coût: ' . $formation['coût'] . '€ par participant</p>';
+            echo '<p>Contenu: ' . $formation['contenu'] . '</p>';
+            echo '<p>Objectif: ' . $formation['objectif'] . '</p>';
+            echo '<p>Nombre de places: ' . $formation['nb_place'] . '</p>';
+            if (isset($_SESSION['user'])) {
+                if ($_SESSION['user'] == "authentified") {
+                    echo '<button>Inscription</button>';//recuperer id de la formation du bouton
+                }
+            } else {
+                echo '<button onclick="information()">Inscription</button>';
+            }
+            /*if(fonctionveriflesinscriptionsduclient(id de la formation)){ verif si le client est inscrit
+                echo '<button>Se désinscrire</button>';
+            }
+            if(fonctionquiverifiequiaplusdeplace(id de la formation)){ verif le nombre de places restantes
+                echo '<button disabled>S\'inscrire</button>';
+            }*/
+            echo '</div>';
         }
-        /*if(fonctionveriflesinscriptionsduclient()){
-            echo '<button>Se désinscrire</button>';
-        }
-        if(fonctionquiverifiequiaplusdeplace()){
-            echo '<button disabled>S\'inscrire</button>';
-        }*/
-        ?>
-    </div>
-
-    <!-- Exemple de formation 2 -->
-    <div class="formation">
-        <h3>Atelier pratique sur le développement durable</h3>
-        <p>Date: 22-23 février 2024</p>
-        <p>Lieu: Salle Verte, Lorraine</p>
-        <p>Intervenants: Mme Écologiste et M. Gestionnaire Énergétique</p>
-        <p>Coût: 40€ par participant</p>
-        <button>Inscription</button>
-    </div>
-
+    }
+    ?>
 </section>
 
 <?php
 include 'includes/footer.html';
 ?>
+<script>
+    function information() {
+        alert("Vous devez être connecté pour vous inscrire à une formation.");
+    }
 
+    function redirectToAccueil() {
+        window.location.href = 'accueil.html.php';
+    }
+</script>
 </body>
-
 </html>
