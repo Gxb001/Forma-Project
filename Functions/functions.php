@@ -45,21 +45,37 @@ function creation_formation($nom, $description, $date_debut, $date_fin, $nb_part
 function getFormations()
 {
     global $connexion;
-    $sql = "SELECT * FROM formations";
+    $sql = "SELECT * FROM formations;";
     $result = $connexion->query($sql);
-    $result->closeCursor();
     $connexion = null;
     return $result;
+}
 
+function getSessionsFormation($idFormation)
+{
+    global $connexion;
+
+    try {
+        $sql = "SELECT * FROM sessions WHERE ID_Formation = :idFormation";
+        $stmt = $connexion->prepare($sql);
+        $stmt->bindParam(':idFormation', $idFormation, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Retourne le résultat en tant qu'objet PDOStatement
+        return $stmt;
+    } catch (PDOException $e) {
+        // En cas d'erreur, affichez un message ou renvoyez false
+        return false;
+    }
 }
 
 function creerNouvelleFormation($titre, $description, $domaine, $cout, $placesDisponibles)
 {
-    include("Bd_connect.php");
+    global $connexion;
 
     try {
         // Préparer la requête d'insertion
-        $query = "INSERT INTO formations (Titre, Description, Domaine, Cout, PlacesDisponibles) VALUES (?, ?, ?, ?, ?)";
+        $query = "INSERT INTO formations (libelle_formation, description_formation, id_domaine, coût, nb_place) VALUES (?, ?, ?, ?, ?)";
         $stmt = $connexion->prepare($query);
 
         // Exécution de la requête avec les valeurs liées
@@ -96,4 +112,5 @@ function creerNouvelleSession($idFormation, $dateDebut, $lieu, $intervenant)
 //creation_user("Ferrer", "Gabriel", "gabfer258@gmail.com", "Azerty31", "B", "Venez comme vous-etes");
 //creation_user("Doumbia", "Bamody", "d.bamody28@gmail.com", "Azerty31", "A", "Club de ping pong");
 
-//creerNouvelleFormation("Formation PowerPoint", "Description de la formation CSS", "Informatique", 100, 20);
+//creerNouvelleFormation("Formation PowerPoint", "Description de la formation CSS", 1, 100, 20);
+//creerNouvelleFormation("Formation PowerPoint", "Description de la formation CSS", 1, 100, 20);
