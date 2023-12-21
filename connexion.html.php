@@ -56,8 +56,13 @@
         }
 
         #error_login {
-            color: #dc3545;
-            text-align: center;
+            display: none;
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -85,10 +90,12 @@ if (isset($_SESSION['user']) && $_SESSION['user'] == "authentified") {
 <script>
     const urlParams = new URLSearchParams(window.location.search);
     const data = urlParams.get('data');
+    const errorDiv = document.getElementById("error_login");
     if (data === "activate_logger") {
-        const errorDiv = document.getElementById("error_login");
+        errorDiv.style.display = "block"
         errorDiv.innerHTML = "Login ou mot de passe incorrect !";
     }
+
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"

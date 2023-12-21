@@ -34,6 +34,25 @@
         #buttons button:hover {
             cursor: pointer;
         }
+
+        /* Ajoutez ces styles dans votre fichier de style CSS ou dans une balise <style> dans le fichier HTML */
+        a.deco {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #dc3545; /* Couleur de fond du bouton */
+            color: #fff; /* Couleur du texte */
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease; /* Ajoute une transition en douceur pour la couleur de fond */
+
+            /* Si vous souhaitez ajouter une ombre au survol, vous pouvez décommenter la ligne suivante */
+            /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); */
+        }
+
+        a.deco:hover {
+            background-color: #c82333; /* Changement de couleur de fond au survol */
+        }
+
     </style>
 </head>
 <body>

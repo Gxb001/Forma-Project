@@ -129,5 +129,5 @@ function creerNouvelleSession($id_session, $date_session, $heure_debut, $heure_f
 //creation_user("Ferrer", "Gabriel", "gabfer258@gmail.com", "Azerty31", "B", "Venez comme vous-etes");
 //creation_user("Doumbia", "Bamody", "d.bamody28@gmail.com", "Azerty31", "A", "Club de ping pong");
 
-creation_formation("Formation D'escrime", "Cours d'escrime en groupe de 10", 30, "10 cours sur 5 semaines", "Apprendre les base de l'escrime", 15, 2);
-creation_formation("Formation Powerpoint", "Decouverte du logiciel", 30, "1 cours ", "Apprendre powerpoint", 10, 1);
+//creation_formation("Formation D\'escrime", "Cours d\'escrime en groupe de 10", 30, "10 cours sur 5 semaines", "Apprendre les base de l\'escrime", 15, 2);
+//creation_formation("Formation Powerpoint", "Decouverte du logiciel", 30, "1 cours ", "Apprendre powerpoint", 10, 1);
