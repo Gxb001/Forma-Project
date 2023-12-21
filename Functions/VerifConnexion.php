@@ -20,13 +20,12 @@ if ($ligne) {
         $_SESSION['role'] = $ligne['statut'];
         $_SESSION['prenom'] = $ligne['prenom'];
         header("Location: ../accueil.html.php");
-        // On quitte le script courant
         exit;
     }
 } else {
     $data = "activate_logger";
     $url = "../connexion.html.php?data=" . urlencode($data);
-    header("Location: " . $url); // Redirection vers la page cible
+    header("Location: " . $url);
 }
 $result->closeCursor();
 $connexion = null;

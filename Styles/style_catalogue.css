@@ -1,23 +1,59 @@
-/* Styles spécifiques pour la page de catalogue */
-h2 {
-    color: #333; /* Couleur de titre principale */
+/* Réinitialisation des styles par défaut */
+/* Style de la section du catalogue */
+section {
+    margin: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around; /* Ajustez cette propriété selon vos préférences */
 }
 
+/* Style de chaque formation */
 .formation {
-    background-color: #fff;
-    border: 1px solid #ddd;
+    border: 2px solid #ddd;
     padding: 15px;
-    margin-bottom: 20px;
+    margin: 10px; /* Espacement entre les formations */
+    border-radius: 8px; /* Coins arrondis */
+    background-color: #fff;
+    /* background-image: url('chemin/vers/votre/image.jpg'); /* Remplacez le chemin par le chemin réel de votre image */
+    background-size: cover; /* Ajustez selon vos besoins */
+    background-position: right center; /* Ajustez selon vos besoins */
+    background-repeat: no-repeat; /* Pas de répétition de l'image */
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    flex: 0 0 calc(30% - 20px); /* Ajustez cette propriété pour définir la largeur de chaque formation */
+    box-sizing: border-box;
 }
 
-button {
-    background-color: #555;
-    color: white;
-    padding: 8px 12px;
+/* Changement de style au survol de la formation */
+.formation:hover {
+    transform: scale(1.02); /* Légèrement agrandir la formation au survol */
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.3); /* Ombre légère */
+}
+
+/* Style du titre de la formation */
+.formation h3 {
+    color: #007BFF; /* Couleur du titre */
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+
+/* Style des informations de la formation */
+.formation p {
+    color: #555;
+    margin-bottom: 8px;
+}
+
+/* Style des boutons d'inscription */
+.formation button {
+    background-color: #007BFF; /* Couleur de fond du bouton */
+    color: #fff; /* Couleur du texte du bouton */
     border: none;
+    padding: 10px 20px;
     cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s ease-in-out;
 }
 
-button:hover {
-    background-color: #333;
+/* Changement de style au survol du bouton */
+.formation button:hover {
+    background-color: #0056b3; /* Nouvelle couleur de fond lors du survol */
 }

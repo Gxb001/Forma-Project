@@ -7,29 +7,30 @@
     <title>CROSL Formations - Catalogue</title>
     <link rel="stylesheet" href="Styles/style_catalogue.css">
     <link rel="stylesheet" href="Styles/Font.css">
+    <link rel="stylesheet" href="Styles/style_scrollbar.css">
 </head>
 
 <body>
 
 <?php
-include 'includes/header.html.php';
 include 'includes/navbar.html.php';
 include 'Functions/functions.php';
 ?>
 
-<section>
+<section class="formations-container">
     <h2>Catalogue des Formations</h2>
     <?php
-    //recuperation des formations
+    // récupération des formations
     $formations = getFormations();
-    //affichage des formations, libelle, cout, contenu, objectif et nombre de place
-    if (count($formations->fetchall()) == 0) {
-        echo '<p>Nous avons aucune formations à vous proposer à ce jour</p>';
+    // récupération de toutes les lignes de résultat
+    $res = $formations->fetchAll();
+    // affichage des formations, libelle, cout, contenu, objectif et nombre de place
+    if (count($res) == 0) {
+        echo '<p>Nous avons aucune formation à vous proposer à ce jour</p>';
         echo '<button onclick="redirectToAccueil()">Retour à l\'accueil</button>';
     } else {
-        //afficher le domaine de la formation (trier)
-
-        foreach ($formations as $formation) {
+        // afficher le domaine de la formation (trier)
+        foreach ($res as $formation) {//afficher le nombre de places restantes
             echo '<div class="formation">';
             echo '<h3>' . $formation['libelle_formation'] . '</h3>';
             echo '<p>Coût: ' . $formation['coût'] . '€ par participant</p>';
@@ -38,17 +39,11 @@ include 'Functions/functions.php';
             echo '<p>Nombre de places: ' . $formation['nb_place'] . '</p>';
             if (isset($_SESSION['user'])) {
                 if ($_SESSION['user'] == "authentified") {
-                    echo '<button>Inscription</button>';//recuperer id de la formation du bouton
+                    echo '<button>S\'nscrire</button>';//recuperer id de la formation du bouton
                 }
             } else {
-                echo '<button onclick="information()">Inscription</button>';
+                echo '<button onclick="information()">S\'nscrire</button>';
             }
-            /*if(fonctionveriflesinscriptionsduclient(id de la formation)){ verif si le client est inscrit
-                echo '<button>Se désinscrire</button>';
-            }
-            if(fonctionquiverifiequiaplusdeplace(id de la formation)){ verif le nombre de places restantes
-                echo '<button disabled>S\'inscrire</button>';
-            }*/
             echo '</div>';
         }
     }
