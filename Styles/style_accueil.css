@@ -4,6 +4,7 @@ body, h1, h2, h3, p {
     padding: 0;
 }
 
+
 /* Style de la section de bienvenue */
 .welcome-section {
     text-align: center;
@@ -20,3 +21,5 @@ body, h1, h2, h3, p {
     font-size: 1.2em;
     line-height: 1.5;
 }
+
+
