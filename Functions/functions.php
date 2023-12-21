@@ -65,7 +65,6 @@ function getFormations()
         $result = $connexion->query($sql);
         return $result;
     } catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
         return false;
     } finally {
         $connexion = null;
@@ -87,10 +86,8 @@ function getSessionsFormation($idFormation)
         $stmt->bindParam(':idFormation', $idFormation, PDO::PARAM_INT);
         $stmt->execute();
 
-        // Retourne le résultat en tant qu'objet PDOStatement
         return $stmt;
     } catch (PDOException $e) {
-        // En cas d'erreur, affichez un message ou renvoyez false
         return false;
     }
 }
