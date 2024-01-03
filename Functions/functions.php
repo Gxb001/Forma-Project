@@ -81,13 +81,25 @@ function getSessionsFormation($idFormation)
     global $connexion;
 
     try {
-        $sql = "SELECT * FROM sessionsformations WHERE id_formation = :idFormation";
+        $sql = "SELECT * FROM sessionformations WHERE id_formation = :idFormation";
         $stmt = $connexion->prepare($sql);
+
+        if (!$stmt) {
+            // Gestion de l'erreur de préparation
+            throw new PDOException('Erreur de préparation de la requête SQL.');
+        }
+
         $stmt->bindParam(':idFormation', $idFormation, PDO::PARAM_INT);
-        $stmt->execute();
+
+        if (!$stmt->execute()) {
+            // Gestion de l'erreur d'exécution de la requête
+            throw new PDOException('Erreur d\'exécution de la requête SQL.');
+        }
 
         return $stmt;
     } catch (PDOException $e) {
+        // Affiche l'erreur dans la console du navigateur
+        echo json_encode(['error' => $e->getMessage()]);
         return false;
     }
 }
@@ -122,6 +134,28 @@ function creerNouvelleSession($id_session, $date_session, $heure_debut, $heure_f
         echo "Erreur PDO : " . $e->getMessage();
     }
 }
+
+/**
+ * @return array|false
+ */
+function getDemandesInscriptionsEnCours()
+{
+    global $connexion; // Assure-toi d'avoir une connexion à la base de données
+
+    try {
+        // Sélectionne les demandes d'inscription en cours
+        $sql = "SELECT * FROM inscription WHERE etat = 'En Cours'";
+        $stmt = $connexion->query($sql);
+
+        // Retourne les résultats en tant qu'array associatif
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        // Gère les erreurs de requête SQL
+        echo "Erreur de requête : " . $e->getMessage();
+        return []; // Retourne un tableau vide en cas d'erreur
+    }
+}
+
 
 //creation_user("Ferrer", "Gabriel", "gabfer258@gmail.com", "Azerty31", "B", "Venez comme vous-etes");
 //creation_user("Doumbia", "Bamody", "d.bamody28@gmail.com", "Azerty31", "A", "Club de ping pong");

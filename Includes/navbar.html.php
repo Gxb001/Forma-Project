@@ -66,6 +66,10 @@
         <?php
         session_start();
         if (isset($_SESSION['user'])) {
+            if ($_SESSION['role'] == "A") {
+                echo '<a href="administration.html.php" class="navbar-brand">Administration</a>';
+                echo '<a href="demandes.html.php" class="navbar-brand">Inscriptions</a>';
+            }
             echo '<a href="./Functions/deconnexion.php" class="deco" data-tooltip="' . $_SESSION['prenom'] . '">Deconnexion</a>';
         } else {
             echo '<button class="btn btn-light" onclick="redirectToLogin()">Se connecter</button>';
