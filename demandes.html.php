@@ -14,7 +14,7 @@
     <h2 class="mb-4">Administration des Demandes d'Inscription</h2>
 
     <?php
-    // Vérifie s'il y a des demandes
+    $demandes = getDemandesInscriptionsEnCours();
     if (empty($demandes)) {
         echo '<p>Aucun utilisateur ne s\'est inscrit à une session.</p>';
     } else {

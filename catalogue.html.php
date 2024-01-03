@@ -148,9 +148,21 @@ include 'includes/footer.html';
 
     // Fonction d'inscription à une session
     function inscrireSession(idSession) {
-        // TODO: Implémenter la logique d'inscription ici
-        console.log('Inscription à la session avec l\'ID : ' + idSession);
-        // ... (ajoutez votre logique d'inscription ici)
+        // Appel AJAX pour inscrire l'utilisateur à la session
+        $.ajax({
+            type: 'POST',
+            url: 'Functions/inscrire_session.php', // Remplace avec le chemin correct de ton script PHP
+            data: {idSession: idSession},
+            success: function (data) {
+                // Traiter la réponse du serveur si nécessaire
+                console.log(data);
+                // Par exemple, actualiser la page après l'inscription
+                window.location.reload();
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
     }
 </script>
 

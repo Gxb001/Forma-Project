@@ -156,6 +156,29 @@ function getDemandesInscriptionsEnCours()
     }
 }
 
+/**
+ * @param $id_session
+ * @param $id_utilisateur
+ * @return void
+ */
+function inscrireSessions($id_session, $id_utilisateur)
+{
+    global $connexion;
+
+    try {
+        // Préparer la requête d'insertion
+        $query = "INSERT INTO inscription (id_session, id_utilisateur) VALUES (?, ?)";
+        $stmt = $connexion->prepare($query);
+
+        // Exécution de la requête avec les valeurs liées
+        $stmt->execute([$id_session, $id_utilisateur]);
+
+        //echo "Nouvelle session créée avec succès.";
+    } catch (PDOException $e) {
+        echo "Erreur PDO : " . $e->getMessage();
+    }
+}
+
 
 //creation_user("Ferrer", "Gabriel", "gabfer258@gmail.com", "Azerty31", "B", "Venez comme vous-etes");
 //creation_user("Doumbia", "Bamody", "d.bamody28@gmail.com", "Azerty31", "A", "Club de ping pong");
