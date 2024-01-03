@@ -65,7 +65,6 @@ function getFormations()
         $result = $connexion->query($sql);
         return $result;
     } catch (PDOException $e) {
-        echo "Error: " . $e->getMessage();
         return false;
     } finally {
         $connexion = null;
@@ -87,10 +86,8 @@ function getSessionsFormation($idFormation)
         $stmt->bindParam(':idFormation', $idFormation, PDO::PARAM_INT);
         $stmt->execute();
 
-        // Retourne le résultat en tant qu'objet PDOStatement
         return $stmt;
     } catch (PDOException $e) {
-        // En cas d'erreur, affichez un message ou renvoyez false
         return false;
     }
 }
@@ -129,5 +126,5 @@ function creerNouvelleSession($id_session, $date_session, $heure_debut, $heure_f
 //creation_user("Ferrer", "Gabriel", "gabfer258@gmail.com", "Azerty31", "B", "Venez comme vous-etes");
 //creation_user("Doumbia", "Bamody", "d.bamody28@gmail.com", "Azerty31", "A", "Club de ping pong");
 
-//creerNouvelleFormation("Formation PowerPoint", "Description de la formation CSS", 1, 100, 20);
-//creerNouvelleFormation("Formation PowerPoint", "Description de la formation CSS", 1, 100, 20);
+//creation_formation("Formation D\'escrime", "Cours d\'escrime en groupe de 10", 30, "10 cours sur 5 semaines", "Apprendre les base de l\'escrime", 15, 2);
+//creation_formation("Formation Powerpoint", "Decouverte du logiciel", 30, "1 cours ", "Apprendre powerpoint", 10, 1);

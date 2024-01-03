@@ -2,6 +2,5 @@
 
 body {
     font-family: 'Kanit', sans-serif;
-    font-family: 'Noto Sans', sans-serif;
-    font-family: 'Ubuntu', sans-serif;
+    overflow-x: hidden;
 }

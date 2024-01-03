@@ -7,20 +7,17 @@
     <title>CROSL Formations</title>
     <link rel="stylesheet" href="Styles/style_accueil.css">
     <link rel="stylesheet" href="Styles/Font.css">
+    <link rel="stylesheet" href="Styles/style_scrollbar.css">
 </head>
 
 <body>
-<?php
-include 'includes/header.html.php';
-include 'includes/navbar.html.php';
-?>
-<section class="welcome-section">
-    <h2>Bienvenue au CROSL Formations</h2>
-    <p>Découvrez notre catalogue de formations et inscrivez-vous pour enrichir vos connaissances !</p>
-</section>
-<?php
-include 'includes/footer.html';
-?>
+<?php include 'includes/navbar.html.php'; ?>
+
+<main>
+    <?php include "includes/carousel.html"; ?>
+</main>
+
+<?php include 'includes/footer.html'; ?>
 </body>
 
 </html>

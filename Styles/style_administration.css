@@ -1,59 +1,32 @@
-section {
-    overflow: hidden; /* Clear the float */
+h1, h2 {
+    color: #333;
 }
 
-h2:first-child {
-    float: left; /* Align the first h2 to the left */
-    margin-left: 15%;
+form {
+    max-width: 500px;
+    margin: 20px 0;
 }
 
-h2:last-child {
-    float: right; /* Align the last h2 to the right */
-    margin-right: 15%;
+label {
+    display: block;
+    margin-bottom: 5px;
 }
 
-/* Nouveau CSS pour les formulaires */
-
-.creeformation,
-.creesession {
-    max-width: 400px; /* Largeur maximale de la div */
-    margin: 0 auto; /* Centre la div horizontalement */
-    padding: 20px; /* Espace intérieur de la div */
-    background-color: #f5f5f5; /* Couleur de fond */
-    border: 1px solid #ddd; /* Bordure avec couleur grise */
-    border-radius: 5px; /* Coins arrondis */
-    margin-bottom: 20px; /* Marge en bas */
+input, textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
 }
 
-.creeformation label,
-.creesession label {
-    display: block; /* Affiche les labels sur une nouvelle ligne */
-    margin-bottom: 8px; /* Marge en bas du label */
-    font-weight: bold; /* Texte en gras */
+input[type="submit"] {
+    background-color: #4CAF50;
+    color: #fff;
+    cursor: pointer;
 }
 
-.creeformation input,
-.creeformation textarea,
-.creeformation button,
-.creesession input,
-.creesession textarea,
-.creesession button {
-    width: 100%; /* Largeur pleine pour les champs et le bouton */
-    padding: 10px; /* Espace intérieur */
-    margin-bottom: 15px; /* Marge en bas */
-    box-sizing: border-box; /* La largeur inclut le padding et la bordure */
+input[type="submit"]:hover {
+    background-color: #45a049;
 }
 
-.creeformation button,
-.creesession button {
-    background-color: #000000; /* Couleur de fond verte */
-    color: white; /* Couleur du texte blanc */
-    cursor: pointer; /* Curseur pointeur au survol */
-    border: none; /* Pas de bordure */
-    border-radius: 5px; /* Coins arrondis */
-}
-
-.creeformation button:hover,
-.creesession button:hover {
-    background-color: #333; /* Couleur de fond plus foncée au survol */
-}
+/* Ajoutez d'autres styles au besoin pour vos autres fonctionnalités d'administration */

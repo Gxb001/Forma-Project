@@ -1,0 +1,22 @@
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background-color: #333;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #666;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-button:horizontal {
+    width: 10px;
+    background-color: #333;
+}
+
+::-webkit-scrollbar-button:vertical {
+    height: 10px;
+    background-color: #333;
+}
