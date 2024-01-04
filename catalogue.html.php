@@ -23,7 +23,6 @@ include 'Functions/functions.php';
     $formations = getFormations();
     //récupération de toutes les lignes de résultat
     $res = $formations->fetchAll();
-    //affichage des formations, libelle, cout, contenu, objectif et nombre de place
     if (count($res) == 0) {
         echo '<p>Nous avons aucune formation à vous proposer à ce jour</p>';
         echo '<button onclick="redirectToAccueil()">Retour à l\'accueil</button>';
@@ -37,7 +36,6 @@ include 'Functions/functions.php';
             echo '<p>Objectif: ' . $formation['objectif'] . '</p>';
             echo '<p>Nombre de places: ' . $formation['nb_place'] . '</p>';
 
-            // Ajouter un attribut data-id avec l'ID de la formation
             echo '<button class="btn-inscrire" data-id="' . $formation["id_formation"] . '">S\'inscrire</button>';
 
             echo '</div>';
@@ -53,7 +51,7 @@ include 'Functions/functions.php';
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" id="sessionsModalBody">
-                <!-- Le contenu des sessions sera ajouté ici par JavaScript -->
+                <!-- Contenu de la modal -->
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
@@ -72,7 +70,6 @@ include 'includes/footer.html';
     $(document).ready(function () {
         $('.btn-inscrire').on('click', function () {
             var idFormation = $(this).data('id');
-
             $.ajax({
                 url: 'Functions/charger_sessions.php',
                 method: 'POST',
@@ -98,25 +95,17 @@ include 'includes/footer.html';
 
     function afficherSessionsDansModal(sessions) {
         console.log('Données de sessions avant parsing JSON:', sessions);
-
         try {
-            // Essaye de convertir les données en objet JSON
             sessions = JSON.parse(sessions);
             console.log('Données de sessions après parsing JSON:', sessions);
         } catch (error) {
             console.error('Erreur de parsing JSON:', error);
         }
-
-        // Vide le contenu actuel de la modal
         $('#sessionsModalBody').empty();
-
         var sessionsFutures = sessions.filter(function (session) {
-            // Filtre les sessions dont la date est aujourd'hui ou plus tard
             return new Date(session.date_session) >= new Date();
         });
-
         if (sessionsFutures.length > 0) {
-            // Ajoute les données des sessions futures dans la modal
             sessionsFutures.forEach(function (session) {
                 var contenuSession = '<p>Date limite: ' + session.date_limite + '</p>' +
                     '<p>Date de session: ' + session.date_session + '</p>' +
@@ -125,38 +114,26 @@ include 'includes/footer.html';
                     '<p>Lieu: ' + session.lieux + '</p>' +
                     '<p>Nombre de participants: ' + session.nb_participant + '</p>' +
                     '<button class="btn-inscrire-session" data-id-session="' + session.id_session + '">S\'inscrire</button>' +
-                    '<hr>'; // Ajoute une ligne de séparation entre les sessions
+                    '<hr>';
                 $('#sessionsModalBody').append(contenuSession);
             });
         } else {
-            // Affiche un message si aucune session future n'est disponible
             $('#sessionsModalBody').html('<p>Nous n\'avons pour le moment aucune session à vous proposer pour cette formation.</p>');
         }
-
-        // Associe un événement au clic sur le bouton "S'inscrire"
         $('.btn-inscrire-session').on('click', function () {
-            // Récupère l'identifiant de la session associé au bouton
             var idSession = $(this).data('id-session');
-
-            // Appelle la fonction d'inscription en passant l'identifiant de la session
             inscrireSession(idSession);
         });
-
-        // Ouvre la modal
         $('#sessionsModal').modal('show');
     }
 
-    // Fonction d'inscription à une session
     function inscrireSession(idSession) {
-        // Appel AJAX pour inscrire l'utilisateur à la session
         $.ajax({
             type: 'POST',
-            url: 'Functions/inscrire_session.php', // Remplace avec le chemin correct de ton script PHP
+            url: 'Functions/inscrire_session.php',
             data: {idSession: idSession},
             success: function (data) {
-                // Traiter la réponse du serveur si nécessaire
                 console.log(data);
-                // Par exemple, actualiser la page après l'inscription
                 window.location.reload();
             },
             error: function (xhr, status, error) {
@@ -165,6 +142,5 @@ include 'includes/footer.html';
         });
     }
 </script>
-
 </body>
 </html>

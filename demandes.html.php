@@ -48,13 +48,11 @@
         crossorigin="anonymous"></script>
 <script>
     function accepterDemande(idInscription) {
-        // Code pour effectuer l'acceptation de la demande (AJAX, etc.)
         $.ajax({
             type: 'POST',
-            url: 'Functions/accepterDemande.php', // Remplace avec le chemin correct de ton script PHP
+            url: 'Functions/accepterDemande.php',
             data: {idInscription: idInscription},
             success: function (data) {
-                // Traiter la réponse du serveur si nécessaire
                 console.log(data);
             },
             error: function (xhr, status, error) {
@@ -64,13 +62,11 @@
     }
 
     function refuserDemande(idInscription) {
-        // Code pour effectuer le refus de la demande (AJAX, etc.)
         $.ajax({
             type: 'POST',
-            url: 'Functions/refuserDemande.php', // Remplace avec le chemin correct de ton script PHP
+            url: 'Functions/refuserDemande.php',
             data: {idInscription: idInscription},
             success: function (data) {
-                // Traiter la réponse du serveur si nécessaire
                 console.log(data);
             },
             error: function (xhr, status, error) {

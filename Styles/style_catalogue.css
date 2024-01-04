@@ -1,51 +1,48 @@
-/* Réinitialisation des styles par défaut */
-/* Style de la section du catalogue */
 section {
     margin: 20px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around; /* Ajustez cette propriété selon vos préférences */
+    justify-content: space-around;
 }
 
-/* Style de chaque formation */
+
 .formation {
     border: 2px solid #ddd;
     padding: 15px;
-    margin: 10px; /* Espacement entre les formations */
-    border-radius: 8px; /* Coins arrondis */
+    margin: 10px;
+    border-radius: 8px;
     background-color: #fff;
-    /* background-image: url('chemin/vers/votre/image.jpg'); /* Remplacez le chemin par le chemin réel de votre image */
-    background-size: cover; /* Ajustez selon vos besoins */
-    background-position: right center; /* Ajustez selon vos besoins */
-    background-repeat: no-repeat; /* Pas de répétition de l'image */
+    background-size: cover;
+    background-position: right center;
+    background-repeat: no-repeat;
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
-    flex: 0 0 calc(30% - 20px); /* Ajustez cette propriété pour définir la largeur de chaque formation */
+    flex: 0 0 calc(30% - 20px);
     box-sizing: border-box;
 }
 
-/* Changement de style au survol de la formation */
+
 .formation:hover {
-    transform: scale(1.02); /* Légèrement agrandir la formation au survol */
-    box-shadow: 0 0 15px rgba(0, 123, 255, 0.3); /* Ombre légère */
+    transform: scale(1.02);
+    box-shadow: 0 0 15px rgba(0, 123, 255, 0.3);
 }
 
-/* Style du titre de la formation */
+
 .formation h3 {
-    color: #007BFF; /* Couleur du titre */
+    color: #007BFF;
     margin-bottom: 10px;
     font-size: 1.2em;
 }
 
-/* Style des informations de la formation */
+
 .formation p {
     color: #555;
     margin-bottom: 8px;
 }
 
-/* Style des boutons d'inscription */
+
 .formation button {
-    background-color: #007BFF; /* Couleur de fond du bouton */
-    color: #fff; /* Couleur du texte du bouton */
+    background-color: #007BFF;
+    color: #fff;
     border: none;
     padding: 10px 20px;
     cursor: pointer;
@@ -53,7 +50,7 @@ section {
     transition: background-color 0.3s ease-in-out;
 }
 
-/* Changement de style au survol du bouton */
+
 .formation button:hover {
-    background-color: #0056b3; /* Nouvelle couleur de fond lors du survol */
+    background-color: #0056b3;
 }

@@ -1,6 +1,4 @@
 <?php
-
-
 include 'Bd_connect.php';
 
 if (isset($_POST['idSession'])) {
