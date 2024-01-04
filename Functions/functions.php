@@ -166,18 +166,118 @@ function inscrireSessions($id_session, $id_utilisateur)
     global $connexion;
 
     try {
-        // Préparer la requête d'insertion
-        $query = "INSERT INTO inscription (id_session, id_utilisateur) VALUES (?, ?)";
+        $id_session = intval($id_session);
+        $id_utilisateur = intval($id_utilisateur);
+
+        $date_inscription = date('Y-m-d');
+
+        $etat = 'En Cours';
+
+        $query = "INSERT INTO inscription (id_session, id_utilisateur, date_inscription, etat) VALUES (?, ?, ?, ?)";
         $stmt = $connexion->prepare($query);
 
-        // Exécution de la requête avec les valeurs liées
-        $stmt->execute([$id_session, $id_utilisateur]);
+        $stmt->execute([$id_session, $id_utilisateur, $date_inscription, $etat]);
 
-        //echo "Nouvelle session créée avec succès.";
+        echo "Inscription réussie avec succès.";
     } catch (PDOException $e) {
-        echo "Erreur PDO : " . $e->getMessage();
+        // Loguer l'erreur dans un fichier de logs par exemple
+        error_log("Erreur PDO : " . $e->getMessage());
+        echo "Une erreur s'est produite lors de l'inscription.";
     }
 }
+
+/**
+ * @param $idSession
+ * @param $idUtilisateur
+ * @return bool
+ */
+function inscriptionExisteDeja($idSession, $idUtilisateur)
+{
+    global $connexion;
+
+    try {
+        $query = "SELECT COUNT(*) FROM inscription WHERE id_session = ? AND id_utilisateur = ?";
+        $stmt = $connexion->prepare($query);
+        $stmt->execute([$idSession, $idUtilisateur]);
+
+        $count = $stmt->fetchColumn();
+
+        return ($count > 0);
+    } catch (PDOException $e) {
+        // Loguer l'erreur dans un fichier de logs par exemple
+        error_log("Erreur PDO lors de la vérification de l'existence de l'inscription : " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * @param $idDomaine
+ * @return false|mixed
+ */
+function getDomaine($idDomaine)
+{
+    global $connexion;
+    $query = "SELECT libelle_domaine FROM domaines WHERE id_domaine = ?";
+    try {
+        $stmt = $connexion->prepare($query);
+        $stmt->execute([$idDomaine]);
+
+        return $stmt->fetchColumn();
+    } catch (PDOException $e) {
+        echo "Erreur PDO : " . $e->getMessage();
+        return false;
+    }
+}
+
+/**
+ * @param $idSession
+ * @param $idUtilisateur
+ * @return false|mixed
+ */
+function getStatusSessionsUser($idSession, $idUtilisateur)
+{
+    global $connexion;
+
+    try {
+        $query = "SELECT etat FROM inscription WHERE id_session = ? AND id_utilisateur = ?";
+        $stmt = $connexion->prepare($query);
+        $stmt->execute([$idSession, $idUtilisateur]);
+
+        return $stmt->fetchColumn();
+    } catch (PDOException $e) {
+        // Loguer l'erreur dans un fichier de logs par exemple
+        error_log("Erreur PDO lors de la récupération du statut de l'inscription : " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Récupère les détails d'une session à partir de son ID.
+ *
+ * @param int $idSession L'ID de la session à récupérer.
+ * @return array|false Les détails de la session ou false si la session n'est pas trouvée.
+ */
+function getSessionDetails($idSession)
+{
+    global $connexion;
+
+    try {
+        $query = "SELECT * FROM sessionformations WHERE id_session = ?";
+        $stmt = $connexion->prepare($query);
+        $stmt->execute([$idSession]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        // Loguer l'erreur dans un fichier de logs par exemple
+        error_log("Erreur PDO lors de la récupération des détails de la session : " . $e->getMessage());
+        return false;
+    }
+}
+
+
+
+
+
 
 
 //creation_user("Ferrer", "Gabriel", "gabfer258@gmail.com", "Azerty31", "B", "Venez comme vous-etes");

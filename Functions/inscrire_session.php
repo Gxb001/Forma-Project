@@ -1,18 +1,33 @@
 <?php
 include 'Bd_connect.php';
+include "functions.php";
 
-if (isset($_POST['idSession'])) {
+session_start();
+
+if (isset($_POST['idSession'], $_POST['idUtilisateur'])) {
     $idSession = $_POST['idSession'];
-    $idUtilisateur = $_SESSION['id_utilisateur']; // Assure-toi d'avoir une session active
+    $idUtilisateur = $_POST['idUtilisateur'];
 
-    include('functions.php'); // Inclure le fichier avec la fonction inscrireSessions
+    echo "ID de session : $idSession, ID utilisateur : $idUtilisateur";
 
-    // Appel de la fonction pour inscrire l'utilisateur à la session
-    inscrireSessions($idSession, $idUtilisateur);
+    include('functions.php');
 
-    echo json_encode(['success' => true]);
+    // Vérifier si l'inscription existe déjà
+    if (inscriptionExisteDeja($idSession, $idUtilisateur)) {
+        echo json_encode(['error' => 'Inscription déjà existante']);
+    } else {
+        // Vérifier si la session a encore des places disponibles
+        $session = getSessionDetails($idSession);
+
+        if ($session && $session['nb_participant'] < $session['nb_max']) {
+            // Ajouter l'inscription
+            inscrireSessions($idSession, $idUtilisateur);
+            echo json_encode(['success' => true]);
+        } else {
+            echo json_encode(['error' => 'La session est complète']);
+        }
+    }
 } else {
-    echo json_encode(['error' => 'ID de session manquant']);
+    echo json_encode(['error' => 'ID de session ou ID d\'utilisateur manquant']);
 }
-
 ?>

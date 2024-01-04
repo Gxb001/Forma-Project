@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="Styles/style_scrollbar.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+
 </head>
 <body>
 <?php
@@ -21,23 +22,25 @@ include 'Functions/functions.php';
     <?php
     //récupération des formations
     $formations = getFormations();
-    //récupération de toutes les lignes de résultat
     $res = $formations->fetchAll();
     if (count($res) == 0) {
         echo '<p>Nous avons aucune formation à vous proposer à ce jour</p>';
         echo '<button onclick="redirectToAccueil()">Retour à l\'accueil</button>';
     } else {
-        // afficher le domaine de la formation à faire
         foreach ($res as $formation) {
+            //$iddomaine = $formation['id_domaine'];
+            //$domaine = getDomaine($iddomaine);
             echo '<div class="formation">';
             echo '<h3>' . $formation['libelle_formation'] . '</h3>';
-            echo '<p>Coût: ' . $formation['coût'] . '€ par participant</p>';
-            echo '<p>Contenu: ' . $formation['contenu'] . '</p>';
-            echo '<p>Objectif: ' . $formation['objectif'] . '</p>';
-            echo '<p>Nombre de places: ' . $formation['nb_place'] . '</p>';
-
-            echo '<button class="btn-inscrire" data-id="' . $formation["id_formation"] . '">S\'inscrire</button>';
-
+            echo '<p>Coût : ' . $formation['coût'] . '€ par participant</p>';
+            echo '<p>Contenu : ' . $formation['contenu'] . '</p>';
+            echo '<p>Domaine : ' . "domaine ici" . '</p>';
+            echo '<p>Nombre de places : ' . $formation['nb_place'] . '</p>';
+            if (isset($_SESSION['user'])) {
+                echo '<button class="btn-inscrire" data-id="' . $formation["id_formation"] . '">S\'inscrire</button>';
+            } else {
+                echo '<button class="btn-inscrire" onclick="information()">S\'inscrire</button>';
+            }
             echo '</div>';
         }
     }
@@ -59,7 +62,8 @@ include 'Functions/functions.php';
         </div>
     </div>
 </div>
-
+<div id="message-container"
+     style="position: fixed; top: 10px; right: 10px; padding: 10px; background-color: #4CAF50; color: #fff; display: none;"></div>
 <?php
 include 'includes/footer.html';
 ?>
@@ -67,6 +71,11 @@ include 'includes/footer.html';
         integrity="sha384-UG8ao2jwOWB7/oDdObZc6ItJmwUkR/PfMyt9Qs5AwX7PsnYn1CRKCTWyncPTWvaS"
         crossorigin="anonymous"></script>
 <script>
+    var moisEnFrancais = [
+        'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+        'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'
+    ];
+
     $(document).ready(function () {
         $('.btn-inscrire').on('click', function () {
             var idFormation = $(this).data('id');
@@ -93,6 +102,13 @@ include 'includes/footer.html';
         window.location.href = 'accueil.html.php';
     }
 
+    function formatHeure(heure) {
+        var date = new Date("1970-01-01T" + heure + "Z");
+        var heures = date.getUTCHours();
+        var minutes = date.getUTCMinutes();
+        var heureFormatee = heures + ":" + (minutes < 10 ? '0' : '') + minutes;
+        return heureFormatee;
+    }
     function afficherSessionsDansModal(sessions) {
         console.log('Données de sessions avant parsing JSON:', sessions);
         try {
@@ -106,40 +122,68 @@ include 'includes/footer.html';
             return new Date(session.date_session) >= new Date();
         });
         if (sessionsFutures.length > 0) {
-            sessionsFutures.forEach(function (session) {
-                var contenuSession = '<p>Date limite: ' + session.date_limite + '</p>' +
-                    '<p>Date de session: ' + session.date_session + '</p>' +
-                    '<p>Heure de début: ' + session.heure_debut + '</p>' +
-                    '<p>Heure de fin: ' + session.heure_fin + '</p>' +
-                    '<p>Lieu: ' + session.lieux + '</p>' +
-                    '<p>Nombre de participants: ' + session.nb_participant + '</p>' +
-                    '<button class="btn-inscrire-session" data-id-session="' + session.id_session + '">S\'inscrire</button>' +
-                    '<hr>';
+            sessionsFutures.forEach(function (session, index) {
+                var dateLimite = new Date(session.date_limite);
+                var dateSession = new Date(session.date_session);
+                var dateLimiteFormatted = dateLimite.getDate() + ' ' + moisEnFrancais[dateLimite.getMonth()] + ' ' + dateLimite.getFullYear();
+                var dateSessionFormatted = dateSession.getDate() + ' ' + moisEnFrancais[dateSession.getMonth()] + ' ' + dateSession.getFullYear();
+                var statut = 'Eligible'; //Définir le statut initial
+                var contenuSession = '';
+                if (session.nb_participants >= session.nb_max) {
+                    contenuSession = '<p>Session #' + (index + 1) + '</p>' +
+                        '<p>Session complète</p>';
+                } else {
+                    contenuSession =
+                        '<p>Session n°' + (index + 1) + '</p>' +
+                        '<p>Date limite: ' + dateLimiteFormatted + '</p>' +
+                        '<p>Date de session: ' + dateSessionFormatted + '</p>' +
+                        '<p>Heure de début: ' + formatHeure(session.heure_debut) + '</p>' +
+                        '<p>Heure de fin: ' + formatHeure(session.heure_fin) + '</p>' +
+                        '<p>Lieu: ' + session.lieux + '</p>' +
+                        '<p>Nombre de place(s): ' + session.nb_max + '</p>' +
+                        '<p>Statut: ' + statut + '</p>' +
+                        '<button class="btn-inscrire-session" data-id-session="' + session.id_session + '" data-id-utilisateur="' + session.id_utilisateur + '">S\'inscrire</button>' +
+                        '<hr>';
+                }
                 $('#sessionsModalBody').append(contenuSession);
             });
         } else {
             $('#sessionsModalBody').html('<p>Nous n\'avons pour le moment aucune session à vous proposer pour cette formation.</p>');
         }
+
         $('.btn-inscrire-session').on('click', function () {
             var idSession = $(this).data('id-session');
-            inscrireSession(idSession);
+            var idUtilisateur = $(this).data('id-utilisateur');
+            inscrireSession(idSession, idUtilisateur);
         });
         $('#sessionsModal').modal('show');
     }
-
-    function inscrireSession(idSession) {
+    function inscrireSession(idSession, idUtilisateur) {
         $.ajax({
             type: 'POST',
             url: 'Functions/inscrire_session.php',
-            data: {idSession: idSession},
+            data: {
+                idSession: idSession,
+                idUtilisateur: idUtilisateur
+            },
             success: function (data) {
                 console.log(data);
-                window.location.reload();
+                if (data.includes('success')) {
+                    afficherMessage('Demande d\'inscription envoyée avec succès');
+                    window.location.reload();
+                } else {
+                    afficherMessage('Vous ne pouvez plus vous inscrire à cette session');
+                }
             },
             error: function (xhr, status, error) {
-                console.error(error);
+                console.error(xhr.responseText);
             }
         });
+    }
+    function afficherMessage(message) {
+        // Affiche le message dans le coin de l'écran
+        var messageContainer = $('#message-container');
+        messageContainer.text(message).fadeIn().delay(2000).fadeOut();
     }
 </script>
 </body>

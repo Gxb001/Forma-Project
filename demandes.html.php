@@ -8,7 +8,8 @@
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 <body>
-<?php include 'Includes/navbar.html.php'; ?>
+<?php include 'Includes/navbar.html.php';
+include "Functions/functions.php" ?>
 
 <div class="container mt-5">
     <h2 class="mb-4">Administration des Demandes d'Inscription</h2>
@@ -22,14 +23,15 @@
         foreach ($demandes as $demande) {
             echo '<div class="card mb-3">';
             echo '<div class="card-body">';
-            echo '<p class="card-text">Utilisateur ID: ' . $demande['id_utilisateur'] . '</p>';
-            echo '<p class="card-text">Session ID: ' . $demande['id_session'] . '</p>';
-            echo '<p class="card-text">Date d\'inscription: ' . $demande['date_inscription'] . '</p>';
-            echo '<p class="card-text">État: ' . $demande['etat'] . '</p>';
 
-            // Boutons pour accepter ou refuser la demande
-            echo '<button class="btn btn-success" onclick="accepterDemande(' . $demande['id_inscription'] . ')">Accepter</button>';
-            echo '<button class="btn btn-danger ms-2" onclick="refuserDemande(' . $demande['id_inscription'] . ')">Refuser</button>';
+            // Vérifier si les clés existent avant de les utiliser
+            echo '<p class="card-text">Utilisateur ID: ' . (isset($demande['id_utilisateur']) ? $demande['id_utilisateur'] : 'N/A') . '</p>';
+            echo '<p class="card-text">Session ID: ' . (isset($demande['id_session']) ? $demande['id_session'] : 'N/A') . '</p>';
+            echo '<p class="card-text">Date d\'inscription: ' . (isset($demande['date_inscription']) ? $demande['date_inscription'] : 'N/A') . '</p>';
+            echo '<p class="card-text">État: ' . (isset($demande['etat']) ? $demande['etat'] : 'N/A') . '</p>';
+
+            echo '<button class="btn btn-success" onclick="accepterDemande(' . (isset($demande['id_session']) ? $demande['id_session'] : 'N/A') . ', ' . (isset($demande['id_utilisateur']) ? $demande['id_utilisateur'] : 'N/A') . ')">Accepter</button>';
+            echo '<button class="btn btn-danger ms-2" onclick="refuserDemande(' . (isset($demande['id_session']) ? $demande['id_session'] : 'N/A') . ', ' . (isset($demande['id_utilisateur']) ? $demande['id_utilisateur'] : 'N/A') . ')">Refuser</button>';
 
             echo '</div>';
             echo '</div>';
@@ -37,9 +39,11 @@
     }
     ?>
 
-</div>
-<?php include 'Includes/footer.html'; ?>
 
+</div>
+<div id="message-container"
+     style="position: fixed; top: 10px; right: 10px; padding: 10px; background-color: #4CAF50; color: #fff; display: none;"></div>
+<?php include 'Includes/footer.html'; ?>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"
         integrity="sha384-UG8ao2jwOWB7/oDdObZc6ItJmwUkR/PfMyt9Qs5AwX7PsnYn1CRKCTWyncPTWvaS"
         crossorigin="anonymous"></script>
@@ -47,13 +51,23 @@
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
         crossorigin="anonymous"></script>
 <script>
-    function accepterDemande(idInscription) {
+    function afficherMessage(message) {
+        // Affiche le message dans le coin de l'écran
+        var messageContainer = $('#message-container');
+        messageContainer.text(message).fadeIn().delay(2000).fadeOut();
+    }
+
+    function accepterDemande(idSession, idUtilisateur) {
         $.ajax({
             type: 'POST',
             url: 'Functions/accepterDemande.php',
-            data: {idInscription: idInscription},
+            data: {
+                idSession: idSession,
+                idUtilisateur: idUtilisateur
+            },
             success: function (data) {
                 console.log(data);
+                afficherMessage('Demande d\'inscription acceptée avec succès');
             },
             error: function (xhr, status, error) {
                 console.error(error);
@@ -61,13 +75,17 @@
         });
     }
 
-    function refuserDemande(idInscription) {
+    function refuserDemande(idSession, idUtilisateur) {
         $.ajax({
             type: 'POST',
             url: 'Functions/refuserDemande.php',
-            data: {idInscription: idInscription},
+            data: {
+                idSession: idSession,
+                idUtilisateur: idUtilisateur
+            },
             success: function (data) {
                 console.log(data);
+                afficherMessage('Demande d\'inscription refusée avec succès');
             },
             error: function (xhr, status, error) {
                 console.error(error);
@@ -75,6 +93,5 @@
         });
     }
 </script>
-
 </body>
 </html>
