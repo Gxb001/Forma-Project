@@ -124,7 +124,7 @@ include 'includes/footer.html';
                 var dateSession = new Date(session.date_session);
                 var dateLimiteFormatted = dateLimite.getDate() + ' ' + moisEnFrancais[dateLimite.getMonth()] + ' ' + dateLimite.getFullYear();
                 var dateSessionFormatted = dateSession.getDate() + ' ' + moisEnFrancais[dateSession.getMonth()] + ' ' + dateSession.getFullYear();
-                var statut = 'Eligible'; //Définir le statut initial
+                var statut = getStatut(<?php echo $_SESSION['id']; ?>, session.id_session); //Définir le statut initial
                 var contenuSession = '';
                 if (session.nb_participants >= session.nb_max) {
                     contenuSession = '<p>Session #' + (index + 1) + '</p>' +
@@ -154,6 +154,39 @@ include 'includes/footer.html';
         });
         $('#sessionsModal').modal('show');
     }
+
+    function getStatut(idUtilisateur, idSession) {
+        var statut = "Non éligible"; // Valeur par défaut
+        $.ajax({
+            type: 'GET',
+            url: 'Functions/get_statut.php',
+            data: {idUtilisateur: idUtilisateur, idSession: idSession},
+            async: false,
+            success: function (data) {
+                switch (data.trim()) {
+                    case 'eligible':
+                        statut = 'Eligible';
+                        break;
+                    case 'non-eligible':
+                        statut = 'Non éligible';
+                        break;
+                    case 'En cours':
+                    case 'Acceptée':
+                    case 'Refusée':
+                        statut = data.trim();
+                        break;
+                    default:
+                        console.error('Statut inconnu :', data);
+                        break;
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        });
+        return statut;
+    }
+
 
     function inscrireSession(idSession, idUtilisateur) {
         console.log('Envoi de la requête avec idSession : ' + idSession + ', idUtilisateur : ' + idUtilisateur);

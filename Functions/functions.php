@@ -439,17 +439,88 @@ function getUsersFromSessions($idSession)
         error_log("Erreur PDO lors de la récupération des détails de la formation : " . $e->getMessage());
         return false;
     }
-
 }
 
+/**
+ * @param $idSession
+ * @param $idUtilisateur
+ * @return mixed|string
+ */
+function getStatutUsers($idSession, $idUtilisateur)
+{
+    $connexion = obtenirConnexion();
 
+    try {
+        $sqlInscription = "SELECT etat FROM inscription WHERE id_utilisateur = :idUtilisateur AND id_session = :idSession";
+        $stmtInscription = $connexion->prepare($sqlInscription);
+        $stmtInscription->bindParam(':idUtilisateur', $idUtilisateur);
+        $stmtInscription->bindParam(':idSession', $idSession);
+        $stmtInscription->execute();
+        $etatInscription = $stmtInscription->fetchColumn();
 
+        if ($etatInscription) {
+            return $etatInscription;
+        }
 
+        //Récupération du nombre d'inscriptions en cours
+        $sqlCountInscriptions = "SELECT COUNT(*) FROM inscription WHERE id_utilisateur = :idUtilisateur AND YEAR(date_inscription) = YEAR(CURDATE()) AND etat = 'Acceptée'";
+        $stmtCountInscriptions = $connexion->prepare($sqlCountInscriptions);
+        $stmtCountInscriptions->bindParam(':idUtilisateur', $idUtilisateur);
+        $stmtCountInscriptions->execute();
+        $count = $stmtCountInscriptions->fetchColumn();
 
+        //Récupération de l'id_formation
+        $sqlFormation = "SELECT id_formation FROM sessionformations WHERE id_session = :idSession";
+        $stmtFormation = $connexion->prepare($sqlFormation);
+        $stmtFormation->bindParam(':idSession', $idSession);
+        $stmtFormation->execute();
+        $idFormation = $stmtFormation->fetchColumn();
 
+        //Récupération de l'id_domaine
+        $sqlDomaine = "SELECT id_domaine FROM formations WHERE id_formation = :idFormation";
+        $stmtDomaine = $connexion->prepare($sqlDomaine);
+        $stmtDomaine->bindParam(':idFormation', $idFormation);
+        $stmtDomaine->execute();
+        $idDomaine = $stmtDomaine->fetchColumn();
 
+        //Vérification du nombre d'inscriptions dans le même domaine
+        $sqlCountDomaine = "SELECT COUNT(*) FROM inscription
+                            INNER JOIN sessionformations ON inscription.id_session = sessionformations.id_session
+                            INNER JOIN formations ON sessionformations.id_formation = formations.id_formation
+                            WHERE inscription.id_utilisateur = :idUtilisateur
+                            AND formations.id_domaine = :idDomaine";
+        $stmtCountDomaine = $connexion->prepare($sqlCountDomaine);
+        $stmtCountDomaine->bindParam(':idUtilisateur', $idUtilisateur);
+        $stmtCountDomaine->bindParam(':idDomaine', $idDomaine);
+        $stmtCountDomaine->execute();
+        $countDomaine = $stmtCountDomaine->fetchColumn();
 
+        //Récupération du statut de l'utilisateur
+        $sqlStatut = "SELECT statut FROM utilisateurs WHERE id_utilisateur = :idUtilisateur";
+        $stmtStatut = $connexion->prepare($sqlStatut);
+        $stmtStatut->bindParam(':idUtilisateur', $idUtilisateur);
+        $stmtStatut->execute();
+        $statut = $stmtStatut->fetchColumn();
 
+        //Récupération du nombre de participants et de places disponibles pour la session
+        $sqlPlacesSession = "SELECT nb_participant, nb_place FROM sessionformations WHERE id_session = :idSession";
+        $stmtPlacesSession = $connexion->prepare($sqlPlacesSession);
+        $stmtPlacesSession->bindParam(':idSession', $idSession);
+        $stmtPlacesSession->execute();
+        $nbParticipant = $stmtPlacesSession->fetchColumn();
+        $nbPlace = $stmtPlacesSession->fetchColumn();
+
+        //Vérification des conditions pour le statut
+        if ($count < 3 && $countDomaine < 2 && $statut != 'A' && $nbParticipant < $nbPlace) {
+            return true;
+        } else {
+            return false;
+        }
+    } catch (PDOException $e) {
+        error_log("Erreur PDO dans getStatutUsers : " . $e->getMessage());
+        return 'Erreur';
+    }
+}
 
 
 

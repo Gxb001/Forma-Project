@@ -10,7 +10,7 @@ if (isset($_POST['idSession'], $_POST['idUtilisateur'])) {
     echo "ID de session : $idSession, ID utilisateur : $idUtilisateur";
 
 
-    // Vérifier si l'utilisateur peut s'inscrire
+    //Vérifier si l'utilisateur peut s'inscrire
     if (verif_admin($idUtilisateur)) {
         echo json_encode(['adm-att' => 'Vous êtes administrateur, vous ne pouvez pas vous inscrire à une session']);
     } elseif (!verif_inscription_count($idUtilisateur)) {
@@ -30,7 +30,7 @@ if (isset($_POST['idSession'], $_POST['idUtilisateur'])) {
         $session = getSessionDetails($idSession);
 
         if ($session && $session['nb_participant'] < $session['nb_max']) {
-            // Ajouter l'inscription
+            //Ajouter l'inscription
             inscrireSessions($idSession, $idUtilisateur);
             echo json_encode(['success' => true]);
         } else {
