@@ -1,6 +1,7 @@
 <?php
 
-include 'Bd_connect.php';
+include 'functions.php';
+$connexion = obtenirConnexion();
 session_start();
 
 if (isset($_POST['idSession'], $_POST['idUtilisateur'])) {

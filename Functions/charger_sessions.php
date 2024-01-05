@@ -1,5 +1,4 @@
 <?php
-include("Bd_connect.php");
 include("functions.php");
 session_start();
 if (isset($_POST['idFormation'])) {

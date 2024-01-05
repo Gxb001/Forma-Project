@@ -1,6 +1,6 @@
 <?php
-include("Bd_connect.php");
 include("functions.php");
+$connexion = obtenirConnexion();
 $email = $_POST['email'];
 $password = $_POST['mdp'];
 

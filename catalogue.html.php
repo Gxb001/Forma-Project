@@ -28,13 +28,13 @@ include 'Functions/functions.php';
         echo '<button onclick="redirectToAccueil()">Retour à l\'accueil</button>';
     } else {
         foreach ($res as $formation) {
-            //$iddomaine = $formation['id_domaine'];
-            //$domaine = getDomaine($iddomaine);
+            $iddomaine = $formation['id_domaine'];
+            $domaine = getDomaine($iddomaine);
             echo '<div class="formation">';
             echo '<h3>' . $formation['libelle_formation'] . '</h3>';
             echo '<p>Coût : ' . $formation['coût'] . '€ par participant</p>';
             echo '<p>Contenu : ' . $formation['contenu'] . '</p>';
-            echo '<p>Domaine : ' . "domaine ici" . '</p>';
+            echo '<p>Domaine : ' . $domaine . '</p>';
             echo '<p>Nombre de places : ' . $formation['nb_place'] . '</p>';
             if (isset($_SESSION['user'])) {
                 echo '<button class="btn-inscrire" data-id="' . $formation["id_formation"] . '">S\'inscrire</button>';
@@ -109,6 +109,7 @@ include 'includes/footer.html';
         var heureFormatee = heures + ":" + (minutes < 10 ? '0' : '') + minutes;
         return heureFormatee;
     }
+
     function afficherSessionsDansModal(sessions) {
         console.log('Données de sessions avant parsing JSON:', sessions);
         try {
@@ -142,7 +143,7 @@ include 'includes/footer.html';
                         '<p>Lieu: ' + session.lieux + '</p>' +
                         '<p>Nombre de place(s): ' + session.nb_max + '</p>' +
                         '<p>Statut: ' + statut + '</p>' +
-                        '<button class="btn-inscrire-session" data-id-session="' + session.id_session + '" data-id-utilisateur="' + session.id_utilisateur + '">S\'inscrire</button>' +
+                        '<button class="btn-inscrire-session" data-id-session="' + session.id_session + '" data-id-utilisateur="' + <?php echo $_SESSION['id']; ?> +'">S\'inscrire</button>' +
                         '<hr>';
                 }
                 $('#sessionsModalBody').append(contenuSession);
@@ -150,7 +151,6 @@ include 'includes/footer.html';
         } else {
             $('#sessionsModalBody').html('<p>Nous n\'avons pour le moment aucune session à vous proposer pour cette formation.</p>');
         }
-
         $('.btn-inscrire-session').on('click', function () {
             var idSession = $(this).data('id-session');
             var idUtilisateur = $(this).data('id-utilisateur');
@@ -158,7 +158,9 @@ include 'includes/footer.html';
         });
         $('#sessionsModal').modal('show');
     }
+
     function inscrireSession(idSession, idUtilisateur) {
+        console.log('Envoi de la requête avec idSession : ' + idSession + ', idUtilisateur : ' + idUtilisateur);
         $.ajax({
             type: 'POST',
             url: 'Functions/inscrire_session.php',
@@ -167,21 +169,29 @@ include 'includes/footer.html';
                 idUtilisateur: idUtilisateur
             },
             success: function (data) {
-                console.log(data);
+                console.log('Réponse du serveur :', data);
                 if (data.includes('success')) {
                     afficherMessage('Demande d\'inscription envoyée avec succès');
-                    window.location.reload();
-                } else {
-                    afficherMessage('Vous ne pouvez plus vous inscrire à cette session');
+                } else if (data.includes('ltm-att')) {
+                    afficherMessage('Vous avez atteint le nombre maximum d\'inscriptions pour cette année (3)');
+                } else if (data.includes('dm-att')) {
+                    afficherMessage('Vous avez déjà deux inscriptions dans ce domaine');
+                } else if (data.includes('ttr-crs')) {
+                    afficherMessage('Votre demande d\'inscription est déjà en cours de traitement');
+                } else if (data.includes('ss-cmpt')) {
+                    afficherMessage('La session est complète');
+                } else if (data.includes('error')) {
+                    afficherMessage('Une erreur est survenue');
                 }
             },
             error: function (xhr, status, error) {
-                console.error(xhr.responseText);
+                console.error('Erreur Ajax :', xhr.responseText);
             }
         });
     }
+
     function afficherMessage(message) {
-        // Affiche le message dans le coin de l'écran
+        //Affiche le message dans le coin de l'écran
         var messageContainer = $('#message-container');
         messageContainer.text(message).fadeIn().delay(2000).fadeOut();
     }

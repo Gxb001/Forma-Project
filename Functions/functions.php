@@ -1,5 +1,22 @@
 <?php
-include("Bd_connect.php");
+function obtenirConnexion()
+{
+    $servername = 'localhost';
+    $username = 'root';
+    $password = '';
+    $dbname = 'forma';
+
+    try {
+        $connexion = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
+        $connexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $connexion->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+
+        return $connexion;
+    } catch (PDOException $e) {
+        echo 'Erreur de connexion : ' . $e->getMessage();
+        return null;
+    }
+}
 
 /**
  * @param $nom
@@ -13,7 +30,7 @@ include("Bd_connect.php");
 //fonction qui crée un utilisateur
 function creation_user($nom, $prenom, $email, $mdp, $status, $association)
 {
-    global $connexion;
+    $connexion = obtenirConnexion();
     $mdp = password_hash($mdp, PASSWORD_DEFAULT);
     $sql = "INSERT INTO utilisateurs (nom, prenom, email, mdp, statut, association) VALUES ('$nom', '$prenom', '$email', '$mdp', '$status', '$association')";
 
@@ -39,7 +56,7 @@ function creation_user($nom, $prenom, $email, $mdp, $status, $association)
 //fonction qui crée une formation
 function creation_formation($libelle, $description, $cout, $contenu, $objectif, $nb_place, $id_domaine)
 {
-    global $connexion;
+    $connexion = obtenirConnexion();
     $sql = "INSERT INTO formations (libelle_formation, description_formation, coût, contenu, objectif, nb_place, id_domaine) VALUES ('$libelle', '$description', '$cout', '$contenu', '$objectif', '$nb_place', '$id_domaine')";
 
     try {
@@ -58,7 +75,7 @@ function creation_formation($libelle, $description, $cout, $contenu, $objectif, 
 //fonction qui récupère les formations
 function getFormations()
 {
-    global $connexion;
+    $connexion = obtenirConnexion();
     $sql = "SELECT * FROM formations;";
 
     try {
@@ -78,7 +95,7 @@ function getFormations()
 //fonction qui récupère les sessions  d'une formation
 function getSessionsFormation($idFormation)
 {
-    global $connexion;
+    $connexion = obtenirConnexion();
 
     try {
         $sql = "SELECT * FROM sessionformations WHERE id_formation = :idFormation";
@@ -119,7 +136,7 @@ function getSessionsFormation($idFormation)
 // Fonction pour créer une nouvelle session
 function creerNouvelleSession($id_session, $date_session, $heure_debut, $heure_fin, $lieux, $nb_participant, $date_limite, $id_formation)
 {
-    global $connexion;
+    $connexion = obtenirConnexion();
 
     try {
         // Préparer la requête d'insertion
@@ -140,7 +157,7 @@ function creerNouvelleSession($id_session, $date_session, $heure_debut, $heure_f
  */
 function getDemandesInscriptionsEnCours()
 {
-    global $connexion; // Assure-toi d'avoir une connexion à la base de données
+    $connexion = obtenirConnexion();
 
     try {
         // Sélectionne les demandes d'inscription en cours
@@ -163,7 +180,7 @@ function getDemandesInscriptionsEnCours()
  */
 function inscrireSessions($id_session, $id_utilisateur)
 {
-    global $connexion;
+    $connexion = obtenirConnexion();
 
     try {
         $id_session = intval($id_session);
@@ -193,22 +210,24 @@ function inscrireSessions($id_session, $id_utilisateur)
  */
 function inscriptionExisteDeja($idSession, $idUtilisateur)
 {
-    global $connexion;
+    $connexion = obtenirConnexion();
 
     try {
-        $query = "SELECT COUNT(*) FROM inscription WHERE id_session = ? AND id_utilisateur = ?";
+        $query = "SELECT etat FROM inscription WHERE id_session = ? AND id_utilisateur = ?";
         $stmt = $connexion->prepare($query);
         $stmt->execute([$idSession, $idUtilisateur]);
 
-        $count = $stmt->fetchColumn();
+        $result = $stmt->fetchColumn();
 
-        return ($count > 0);
+        // Si une inscription existe, retournez son état, sinon retournez false
+        return ($result !== false) ? $result : false;
     } catch (PDOException $e) {
         // Loguer l'erreur dans un fichier de logs par exemple
-        error_log("Erreur PDO lors de la vérification de l'existence de l'inscription : " . $e->getMessage());
+        error_log("Erreur PDO lors de la récupération de l'état de l'inscription : " . $e->getMessage());
         return false;
     }
 }
+
 
 /**
  * @param $idDomaine
@@ -216,7 +235,7 @@ function inscriptionExisteDeja($idSession, $idUtilisateur)
  */
 function getDomaine($idDomaine)
 {
-    global $connexion;
+    $connexion = obtenirConnexion();
     $query = "SELECT libelle_domaine FROM domaines WHERE id_domaine = ?";
     try {
         $stmt = $connexion->prepare($query);
@@ -236,7 +255,7 @@ function getDomaine($idDomaine)
  */
 function getStatusSessionsUser($idSession, $idUtilisateur)
 {
-    global $connexion;
+    $connexion = obtenirConnexion();
 
     try {
         $query = "SELECT etat FROM inscription WHERE id_session = ? AND id_utilisateur = ?";
@@ -259,7 +278,7 @@ function getStatusSessionsUser($idSession, $idUtilisateur)
  */
 function getSessionDetails($idSession)
 {
-    global $connexion;
+    $connexion = obtenirConnexion();
 
     try {
         $query = "SELECT * FROM sessionformations WHERE id_session = ?";
@@ -273,6 +292,71 @@ function getSessionDetails($idSession)
         return false;
     }
 }
+
+/**
+ * @param $id_utilisateur
+ * @param $id_session
+ * @return false|mixed
+ */
+function verif_inscription_count($id_utilisateur)
+{
+    $connexion = obtenirConnexion();
+    $sql = "SELECT COUNT(*) FROM inscription WHERE id_utilisateur = '$id_utilisateur' AND YEAR(date_inscription) = YEAR(CURDATE())";
+
+    try {
+        $result = $connexion->query($sql);
+        $count = $result->fetchColumn();
+
+        // Vérifier si le nombre d'inscriptions est inférieur à 3
+        return $count < 3;
+    } catch (PDOException $e) {
+        return false;
+    } finally {
+        $connexion = null;
+    }
+}
+
+/**
+ * @param $id_utilisateur
+ * @param $id_session
+ * @return bool
+ */
+function verif_domaine_inscription($id_utilisateur, $id_session)
+{
+    $connexion = obtenirConnexion();
+
+    try {
+        // Sélectionner l'id_formation de la session actuelle
+        $sql_formation = "SELECT id_formation FROM sessionformations WHERE id_session = '$id_session'";
+        $result_formation = $connexion->query($sql_formation);
+        $id_formation = $result_formation->fetchColumn();
+
+        // Sélectionner l'id_domaine de la formation associée à la session actuelle
+        $sql_domaine = "SELECT id_domaine FROM formations WHERE id_formation = '$id_formation'";
+        $result_domaine = $connexion->query($sql_domaine);
+        $id_domaine = $result_domaine->fetchColumn();
+
+        // Vérifier si l'utilisateur a déjà deux inscriptions dans le même domaine
+        $sql = "SELECT COUNT(*) 
+                FROM inscription
+                INNER JOIN sessionformations ON inscription.id_session = sessionformations.id_session
+                INNER JOIN formations ON sessionformations.id_formation = formations.id_formation
+                WHERE inscription.id_utilisateur = '$id_utilisateur'
+                AND formations.id_domaine = '$id_domaine'";
+
+        $result = $connexion->query($sql);
+        $count = $result->fetchColumn();
+
+        // Retourner vrai si l'utilisateur peut s'inscrire (moins de deux inscriptions dans le même domaine)
+        return $count < 2;
+    } catch (PDOException $e) {
+        return false;
+    }
+}
+
+
+
+
 
 
 
