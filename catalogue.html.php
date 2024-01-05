@@ -32,14 +32,14 @@ include 'Functions/functions.php';
             $domaine = getDomaine($iddomaine);
             echo '<div class="formation">';
             echo '<h3>' . $formation['libelle_formation'] . '</h3>';
-            echo '<p>Coût : ' . $formation['coût'] . '€ par participant</p>';
+            echo '<p>Coût : ' . $formation['cout'] . '€ par participant</p>';
             echo '<p>Contenu : ' . $formation['contenu'] . '</p>';
             echo '<p>Domaine : ' . $domaine . '</p>';
             echo '<p>Nombre de places : ' . $formation['nb_place'] . '</p>';
             if (isset($_SESSION['user'])) {
                 echo '<button class="btn-inscrire" data-id="' . $formation["id_formation"] . '">S\'inscrire</button>';
             } else {
-                echo '<button class="btn-inscrire" onclick="information()">S\'inscrire</button>';
+                echo '<button class="btn-inscrire" onclick="alert(\'Vous devez être connecté pour vous inscrire à une formation.\')">S\'inscrire</button>';
             }
             echo '</div>';
         }
@@ -93,10 +93,6 @@ include 'includes/footer.html';
             });
         });
     });
-
-    function information() {
-        alert("Vous devez être connecté pour vous inscrire à une formation.");
-    }
 
     function redirectToAccueil() {
         window.location.href = 'accueil.html.php';
@@ -172,12 +168,16 @@ include 'includes/footer.html';
                 console.log('Réponse du serveur :', data);
                 if (data.includes('success')) {
                     afficherMessage('Demande d\'inscription envoyée avec succès');
+                } else if (data.includes('adm-att')) {
+                    afficherMessage('Vous êtes administrateur, vous ne pouvez pas vous inscrire à une session');
                 } else if (data.includes('ltm-att')) {
                     afficherMessage('Vous avez atteint le nombre maximum d\'inscriptions pour cette année (3)');
                 } else if (data.includes('dm-att')) {
                     afficherMessage('Vous avez déjà deux inscriptions dans ce domaine');
                 } else if (data.includes('ttr-crs')) {
                     afficherMessage('Votre demande d\'inscription est déjà en cours de traitement');
+                } else if (data.includes('ttr-cra')) {
+                    afficherMessage('Votre demande d\'inscription a deja été acceptée');
                 } else if (data.includes('ss-cmpt')) {
                     afficherMessage('La session est complète');
                 } else if (data.includes('error')) {

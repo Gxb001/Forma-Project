@@ -160,16 +160,15 @@ function getDemandesInscriptionsEnCours()
     $connexion = obtenirConnexion();
 
     try {
-        // Sélectionne les demandes d'inscription en cours
+        //Sélectionne les demandes d'inscription en cours
         $sql = "SELECT * FROM inscription WHERE etat = 'En Cours'";
         $stmt = $connexion->query($sql);
 
-        // Retourne les résultats en tant qu'array associatif
+        //Retourne les résultats en tant qu'array associatif
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
-        // Gère les erreurs de requête SQL
         echo "Erreur de requête : " . $e->getMessage();
-        return []; // Retourne un tableau vide en cas d'erreur
+        return []; //Retourne un tableau vide en cas d'erreur
     }
 }
 
@@ -224,6 +223,16 @@ function inscriptionExisteDeja($idSession, $idUtilisateur)
     } catch (PDOException $e) {
         // Loguer l'erreur dans un fichier de logs par exemple
         error_log("Erreur PDO lors de la récupération de l'état de l'inscription : " . $e->getMessage());
+        return false;
+    }
+}
+
+function sessionsDejaAccepte($idSession, $idUtilisateur)
+{
+    $etat = inscriptionExisteDeja($idSession, $idUtilisateur);
+    if ($etat == 'Acceptée') {
+        return true;
+    } else {
         return false;
     }
 }
@@ -301,7 +310,7 @@ function getSessionDetails($idSession)
 function verif_inscription_count($id_utilisateur)
 {
     $connexion = obtenirConnexion();
-    $sql = "SELECT COUNT(*) FROM inscription WHERE id_utilisateur = '$id_utilisateur' AND YEAR(date_inscription) = YEAR(CURDATE())";
+    $sql = "SELECT COUNT(*) FROM inscription WHERE id_utilisateur = '$id_utilisateur' AND YEAR(date_inscription) = YEAR(CURDATE()) AND etat = 'Acceptée'";
 
     try {
         $result = $connexion->query($sql);
@@ -353,6 +362,86 @@ function verif_domaine_inscription($id_utilisateur, $id_session)
         return false;
     }
 }
+
+/**
+ * @param $idUtilisateur
+ * @return bool
+ */
+function verif_admin($idUtilisateur)
+{
+    $connexion = obtenirConnexion();
+    $sql = "SELECT statut FROM utilisateurs WHERE id_utilisateur = '$idUtilisateur'";
+
+    try {
+        $result = $connexion->query($sql);
+        $statut = $result->fetchColumn();
+
+        // Vérifier si le nombre d'inscriptions est inférieur à 3
+        return $statut == 'A';
+    } catch (PDOException $e) {
+        return false;
+    } finally {
+        $connexion = null;
+    }
+}
+
+function getUtilisateurDetails($idUtilisateur)
+{
+    $connexion = obtenirConnexion();
+
+    try {
+        $query = "SELECT nom, prenom, email, association FROM utilisateurs WHERE id_utilisateur = ?";
+        $stmt = $connexion->prepare($query);
+        $stmt->execute([$idUtilisateur]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        // Loguer l'erreur dans un fichier de logs par exemple
+        error_log("Erreur PDO lors de la récupération des détails de l'utilisateur : " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * @param $idSession
+ * @return false|mixed
+ */
+function getFormationDetailsSession($idSession)
+{
+    $connexion = obtenirConnexion();
+
+    try {
+        $query = "SELECT * FROM formations WHERE id_formation = (SELECT id_formation FROM sessionformations WHERE id_session = ?)";
+        $stmt = $connexion->prepare($query);
+        $stmt->execute([$idSession]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        // Loguer l'erreur dans un fichier de logs par exemple
+        error_log("Erreur PDO lors de la récupération des détails de la formation : " . $e->getMessage());
+        return false;
+    }
+
+}
+
+function getUsersFromSessions($idSession)
+{
+    $connexion = obtenirConnexion();
+
+    try {
+        $query = "SELECT * FROM utilisateurs WHERE id_utilisateur IN (SELECT id_utilisateur FROM inscription WHERE id_session = ?)";
+        $stmt = $connexion->prepare($query);
+        $stmt->execute([$idSession]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        // Loguer l'erreur dans un fichier de logs par exemple
+        error_log("Erreur PDO lors de la récupération des détails de la formation : " . $e->getMessage());
+        return false;
+    }
+
+}
+
 
 
 

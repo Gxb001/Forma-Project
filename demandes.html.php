@@ -17,21 +17,34 @@ include "Functions/functions.php" ?>
     <?php
     $demandes = getDemandesInscriptionsEnCours();
     if (empty($demandes)) {
-        echo '<p>Aucun utilisateur ne s\'est inscrit à une session.</p>';
+        echo '<p>Aucun utilisateur en attente de validation</p>';
     } else {
         // Affiche les demandes
         foreach ($demandes as $demande) {
+            // Récupérer les détails de la formation
+            $formation = getFormationDetailsSession($demande['id_session']);
+
+            // Récupérer les détails de l'utilisateur
+            $utilisateur = getUtilisateurDetails($demande['id_utilisateur']);
+
             echo '<div class="card mb-3">';
             echo '<div class="card-body">';
 
-            // Vérifier si les clés existent avant de les utiliser
-            echo '<p class="card-text">Utilisateur ID: ' . (isset($demande['id_utilisateur']) ? $demande['id_utilisateur'] : 'N/A') . '</p>';
-            echo '<p class="card-text">Session ID: ' . (isset($demande['id_session']) ? $demande['id_session'] : 'N/A') . '</p>';
-            echo '<p class="card-text">Date d\'inscription: ' . (isset($demande['date_inscription']) ? $demande['date_inscription'] : 'N/A') . '</p>';
-            echo '<p class="card-text">État: ' . (isset($demande['etat']) ? $demande['etat'] : 'N/A') . '</p>';
+            // Utilisez les détails récupérés pour afficher plus d'informations
+            echo '<p class="card-text">Nom: ' . ($utilisateur['nom'] ?? 'N/A') . '</p>';
+            echo '<p class="card-text">Prénom: ' . ($utilisateur['prenom'] ?? 'N/A') . '</p>';
+            echo '<p class="card-text">Email: ' . ($utilisateur['email'] ?? 'N/A') . '</p>';
+            echo '<p class="card-text">Association: ' . ($utilisateur['association'] ?? 'N/A') . '</p>';
 
-            echo '<button class="btn btn-success" onclick="accepterDemande(' . (isset($demande['id_session']) ? $demande['id_session'] : 'N/A') . ', ' . (isset($demande['id_utilisateur']) ? $demande['id_utilisateur'] : 'N/A') . ')">Accepter</button>';
-            echo '<button class="btn btn-danger ms-2" onclick="refuserDemande(' . (isset($demande['id_session']) ? $demande['id_session'] : 'N/A') . ', ' . (isset($demande['id_utilisateur']) ? $demande['id_utilisateur'] : 'N/A') . ')">Refuser</button>';
+            echo '<p class="card-text">Formation ID: ' . ($formation['id'] ?? 'N/A') . '</p>';
+            echo '<p class="card-text">Nom de la formation: ' . ($formation['libelle_formation'] ?? 'N/A') . '</p>';
+            echo '<p class="card-text">Cout: ' . ($formation['cout'] ?? 'N/A') . '</p>';
+            echo '<p class="card-text">Places: ' . ($formation['nb_place'] ?? 'N/A') . '</p>';
+
+            echo '<p class="card-text">Date de demande: ' . ($demande['date_inscription'] ?? 'N/A') . '</p>';
+
+            echo '<button class="btn btn-success" onclick="accepterDemande(' . ($demande['id_session'] ?? 'N/A') . ', ' . ($demande['id_utilisateur'] ?? 'N/A') . ')">Accepter</button>';
+            echo '<button class="btn btn-danger ms-2" onclick="refuserDemande(' . ($demande['id_session'] ?? 'N/A') . ', ' . ($demande['id_utilisateur'] ?? 'N/A') . ')">Refuser</button>';
 
             echo '</div>';
             echo '</div>';
