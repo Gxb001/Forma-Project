@@ -19,12 +19,8 @@ include "Functions/functions.php" ?>
     if (empty($demandes)) {
         echo '<p>Aucun utilisateur en attente de validation</p>';
     } else {
-        // Affiche les demandes
         foreach ($demandes as $demande) {
-            // Récupérer les détails de la formation
             $formation = getFormationDetailsSession($demande['id_session']);
-
-            // Récupérer les détails de l'utilisateur
             $utilisateur = getUtilisateurDetails($demande['id_utilisateur']);
 
             echo '<div class="card mb-3">';
@@ -36,12 +32,12 @@ include "Functions/functions.php" ?>
             echo '<p class="card-text">Email: ' . ($utilisateur['email'] ?? 'N/A') . '</p>';
             echo '<p class="card-text">Association: ' . ($utilisateur['association'] ?? 'N/A') . '</p>';
 
-            echo '<p class="card-text">Formation ID: ' . ($formation['id'] ?? 'N/A') . '</p>';
+            echo '<p class="card-text">Formation ID: ' . ($formation['id_formation'] ?? 'N/A') . '</p>';
             echo '<p class="card-text">Nom de la formation: ' . ($formation['libelle_formation'] ?? 'N/A') . '</p>';
-            echo '<p class="card-text">Cout: ' . ($formation['cout'] ?? 'N/A') . '</p>';
+            echo '<p class="card-text">Cout: ' . ($formation['cout'] ?? 'N/A') . '€' . '</p>';
             echo '<p class="card-text">Places: ' . ($formation['nb_place'] ?? 'N/A') . '</p>';
-
-            echo '<p class="card-text">Date de demande: ' . ($demande['date_inscription'] ?? 'N/A') . '</p>';
+            $date = formatDate($demande['date_inscription']);
+            echo '<p class="card-text">Date de demande: ' . ($date ?? 'N/A') . '</p>';
 
             echo '<button class="btn btn-success" onclick="accepterDemande(' . ($demande['id_session'] ?? 'N/A') . ', ' . ($demande['id_utilisateur'] ?? 'N/A') . ')">Accepter</button>';
             echo '<button class="btn btn-danger ms-2" onclick="refuserDemande(' . ($demande['id_session'] ?? 'N/A') . ', ' . ($demande['id_utilisateur'] ?? 'N/A') . ')">Refuser</button>';
@@ -65,7 +61,7 @@ include "Functions/functions.php" ?>
         crossorigin="anonymous"></script>
 <script>
     function afficherMessage(message) {
-        // Affiche le message dans le coin de l'écran
+        //Affiche le message dans le coin de l'écran
         var messageContainer = $('#message-container');
         messageContainer.text(message).fadeIn().delay(2000).fadeOut();
     }
@@ -86,6 +82,9 @@ include "Functions/functions.php" ?>
                 console.error(error);
             }
         });
+        setTimeout(function () {
+            window.location.reload();
+        }, 2000);
     }
 
     function refuserDemande(idSession, idUtilisateur) {
@@ -104,6 +103,9 @@ include "Functions/functions.php" ?>
                 console.error(error);
             }
         });
+        setTimeout(function () {
+            window.location.reload();
+        }, 2000);
     }
 </script>
 </body>

@@ -9,7 +9,7 @@ if (isset($_GET['idSession']) && isset($_GET['idUtilisateur'])) {
     $statut = getStatutUsers($idSession, $idUtilisateur);
 
     switch ($statut) {
-        case 'En cours':
+        case 'En Cours':
         case 'Acceptée':
         case 'Refusée':
             echo $statut;

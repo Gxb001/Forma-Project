@@ -522,6 +522,48 @@ function getStatutUsers($idSession, $idUtilisateur)
     }
 }
 
+/**
+ * @param $date
+ * @return string
+ * @throws Exception
+ */
+function formatDate($date)
+{
+    $dateObj = new DateTime($date);
+    $moisEnFrancais = [
+        'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+        'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'
+    ];
+    $mois = $moisEnFrancais[intval($dateObj->format('n')) - 1];
+    $dateFormatee = $dateObj->format('j ') . $mois . $dateObj->format(' Y');
+    return ucfirst($dateFormatee); //majuscule
+}
+
+/**
+ * @param $idFormation
+ * @return false|PDOStatement
+ */
+function getAllUsersFormation($idFormation)
+{
+    $connexion = obtenirConnexion();
+    $sql = "SELECT u.id_utilisateur, u.nom, u.prenom, u.email, u.association, u.tel, u.adresse, u.ville, u.cp, s.id_formation, f.libelle_formation 
+            FROM utilisateurs u
+            JOIN inscription i ON u.id_utilisateur = i.id_utilisateur
+            JOIN sessionformations s ON i.id_session = s.id_session
+            JOIN formations f ON s.id_formation = f.id_formation
+            WHERE s.id_formation = '$idFormation' AND i.etat = 'Acceptée'";
+    try {
+        $result = $connexion->query($sql);
+        return $result;
+    } catch (PDOException $e) {
+        return false;
+    } finally {
+        $connexion = null;
+    }
+}
+
+
+
 
 
 //creation_user("Ferrer", "Gabriel", "gabfer258@gmail.com", "Azerty31", "B", "Venez comme vous-etes");

@@ -126,10 +126,13 @@ include 'includes/footer.html';
                 var dateSessionFormatted = dateSession.getDate() + ' ' + moisEnFrancais[dateSession.getMonth()] + ' ' + dateSession.getFullYear();
                 var statut = getStatut(<?php echo $_SESSION['id']; ?>, session.id_session); //Définir le statut initial
                 var contenuSession = '';
-                if (session.nb_participants >= session.nb_max) {
-                    contenuSession = '<p>Session #' + (index + 1) + '</p>' +
+                var nbMax = +session.nb_max;
+                var nbParticipants = +session.nb_participant;
+                if (session.nb_participant >= session.nb_max) {
+                    contenuSession = '<p>Session n°' + (index + 1) + '</p>' +
                         '<p>Session complète</p>';
                 } else {
+                    var placerestantes = nbMax - nbParticipants;
                     contenuSession =
                         '<p>Session n°' + (index + 1) + '</p>' +
                         '<p>Date limite: ' + dateLimiteFormatted + '</p>' +
@@ -137,7 +140,7 @@ include 'includes/footer.html';
                         '<p>Heure de début: ' + formatHeure(session.heure_debut) + '</p>' +
                         '<p>Heure de fin: ' + formatHeure(session.heure_fin) + '</p>' +
                         '<p>Lieu: ' + session.lieux + '</p>' +
-                        '<p>Nombre de place(s): ' + session.nb_max + '</p>' +
+                        '<p>Nombre de place(s): ' + placerestantes + '/' + session.nb_max + '</p>' +
                         '<p>Statut: ' + statut + '</p>' +
                         '<button class="btn-inscrire-session" data-id-session="' + session.id_session + '" data-id-utilisateur="' + <?php echo $_SESSION['id']; ?> +'">S\'inscrire</button>' +
                         '<hr>';
@@ -156,7 +159,7 @@ include 'includes/footer.html';
     }
 
     function getStatut(idUtilisateur, idSession) {
-        var statut = "Non éligible"; // Valeur par défaut
+        var statut = '';
         $.ajax({
             type: 'GET',
             url: 'Functions/get_statut.php',
@@ -170,7 +173,7 @@ include 'includes/footer.html';
                     case 'non-eligible':
                         statut = 'Non éligible';
                         break;
-                    case 'En cours':
+                    case 'En Cours':
                     case 'Acceptée':
                     case 'Refusée':
                         statut = data.trim();
@@ -221,6 +224,9 @@ include 'includes/footer.html';
                 console.error('Erreur Ajax :', xhr.responseText);
             }
         });
+        setTimeout(function () {
+            location.reload();
+        }, 2000);
     }
 
     function afficherMessage(message) {
