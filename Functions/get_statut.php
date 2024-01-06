@@ -6,7 +6,12 @@ if (isset($_GET['idSession']) && isset($_GET['idUtilisateur'])) {
     $idSession = $_GET['idSession'];
     $idUtilisateur = $_GET['idUtilisateur'];
 
-    $statut = getStatutUsers($idSession, $idUtilisateur);
+    if (verif_admin($idUtilisateur)) {
+        echo 'non-eligible';
+        exit();
+    } else {
+        $statut = getStatutUsers($idSession, $idUtilisateur);
+    }
 
     switch ($statut) {
         case 'En Cours':
@@ -24,6 +29,7 @@ if (isset($_GET['idSession']) && isset($_GET['idUtilisateur'])) {
             echo 'error';
             break;
     }
+    exit();
 } else {
     echo 'error';
 }

@@ -120,6 +120,12 @@ include 'includes/footer.html';
         }
     });
 
+    document.getElementById('exportAll').addEventListener('change', function () {
+        if (this.checked) {
+            document.getElementById('selectFormationSection').style.display = 'none';
+        }
+    });
+
 
     document.getElementById('exportData').addEventListener('click', function () {
         //Récupérer la valeur de l'option choisie

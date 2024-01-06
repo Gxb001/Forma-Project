@@ -26,7 +26,7 @@ if (isset($_POST['idSession'], $_POST['idUtilisateur'])) {
         }
 
     } else {
-        // Vérifier si la session a encore des places disponibles
+        //Vérifier si la session a encore des places disponibles
         $session = getSessionDetails($idSession);
 
         if ($session && $session['nb_participant'] < $session['nb_max']) {
