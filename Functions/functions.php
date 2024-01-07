@@ -44,20 +44,18 @@ function creation_user($nom, $prenom, $email, $mdp, $status, $association)
 }
 
 /**
- * @param $nom
- * @param $description
- * @param $date_debut
- * @param $date_fin
- * @param $nb_participants
- * @param $nb_participants_max
- * @param $association
+ * @param $libelle
+ * @param $cout
+ * @param $contenu
+ * @param $nb_place
+ * @param $id_domaine
  * @return void
  */
 //fonction qui crée une formation
-function creation_formation($libelle, $description, $cout, $contenu, $objectif, $nb_place, $id_domaine)
+function creation_formation($libelle, $cout, $contenu, $nb_place, $id_domaine)
 {
     $connexion = obtenirConnexion();
-    $sql = "INSERT INTO formations (libelle_formation, description_formation, coût, contenu, objectif, nb_place, id_domaine) VALUES ('$libelle', '$description', '$cout', '$contenu', '$objectif', '$nb_place', '$id_domaine')";
+    $sql = "INSERT INTO formations (libelle_formation, cout, contenu, nb_place, id_domaine, nb_participants) VALUES ('$libelle', '$cout', '$contenu', '$nb_place', '$id_domaine', 0)";
 
     try {
         $connexion->exec($sql);
@@ -134,17 +132,17 @@ function getSessionsFormation($idFormation)
  * @return void
  */
 // Fonction pour créer une nouvelle session
-function creerNouvelleSession($id_session, $date_session, $heure_debut, $heure_fin, $lieux, $nb_participant, $date_limite, $id_formation)
+function creerNouvelleSession($date_session, $heure_debut, $heure_fin, $lieux, $date_limite, $id_formation, $nbmax)
 {
     $connexion = obtenirConnexion();
 
     try {
         // Préparer la requête d'insertion
-        $query = "INSERT INTO sessionsformations (id_session, date_session, heure_debut, heure_fin, lieux, nb_participant, date_limite, id_formation) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        $query = "INSERT INTO sessionsformations (date_session, heure_debut, heure_fin, lieux, nb_participant, date_limite, id_formation, nb_max) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)";
         $stmt = $connexion->prepare($query);
 
         // Exécution de la requête avec les valeurs liées
-        $stmt->execute([$id_session, $date_session, $heure_debut, $heure_fin, $lieux, $nb_participant, $date_limite, $id_formation]);
+        $stmt->execute([$date_session, $heure_debut, $heure_fin, $lieux, 0, $date_limite, $id_formation, $nbmax]);
 
         echo "Nouvelle session créée avec succès.";
     } catch (PDOException $e) {

@@ -12,7 +12,7 @@
 include "Functions/functions.php" ?>
 <?php
 if (isset($_SESSION['user'])) {
-    if ($_SESSION['role'] == "A") {
+    if ($_SESSION['role'] != "A") {
         header("Location: accueil.html.php");
     }
 }

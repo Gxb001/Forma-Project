@@ -11,7 +11,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
-
 <body>
 <?php
 include 'includes/navbar.html.php';
@@ -22,7 +21,7 @@ if (isset($_SESSION['user']) && $_SESSION['role'] != "A") {
 ?>
 <?php
 if (isset($_SESSION['user'])) {
-    if ($_SESSION['role'] == "A") {
+    if ($_SESSION['role'] != "A") {
         header("Location: accueil.html.php");
     }
 }
@@ -79,6 +78,91 @@ if (isset($_SESSION['user'])) {
             </div>
         </div>
     </div>
+</section>
+
+<section>
+    <form id="formFormation">
+        <div class="mb-3">
+            <label for="libelle" class="form-label">Libellé:</label>
+            <input type="text" class="form-control" name="libelle" required>
+        </div>
+        <div class="mb-3">
+            <label for="cout" class="form-label">Coût:</label>
+            <input type="number" class="form-control" name="cout" required>
+        </div>
+        <div class="mb-3">
+            <label for="contenu" class="form-label">Contenu:</label>
+            <input type="text" class="form-control" name="contenu" required>
+        </div>
+        <div class="mb-3">
+            <label for="nb_place" class="form-label">Nombre de places:</label>
+            <input type="number" class="form-control" name="nb_place" required>
+        </div>
+        <div class="mb-3">
+            <label for="id_domaine" class="form-label">Domaine:</label>
+            <?php
+            include_once("Functions/functions.php");
+            $connexion = obtenirConnexion();
+            try {
+                $domaines = $connexion->query("SELECT * FROM domaines");
+                $domaines = $domaines->fetchAll();
+                echo "<select class='form-select' name='id_domaine'>";
+                foreach ($domaines as $domaine) {
+                    echo "<option value='" . $domaine['id_domaine'] . "'>" . $domaine['libelle_domaine'] . "</option>";
+                }
+            } catch (PDOException $e) {
+                echo $e->getMessage();
+            } finally {
+                $connexion = null;
+                echo '</select>';
+            }
+            ?>
+        </div>
+        <button type="button" class="btn btn-primary" onclick="creerFormation()">Créer Formation</button>
+    </form>
+
+    <!-- Formulaire pour créer une session -->
+    <form id="formSession">
+        <div class="mb-3">
+            <label for="date_session" class="form-label">Date de session:</label>
+            <input type="date" class="form-control" name="date_session" required>
+        </div>
+        <div class="mb-3">
+            <label for="heure_debut" class="form-label">Heure de début:</label>
+            <input type="time" class="form-control" name="heure_debut" required>
+        </div>
+        <div class="mb-3">
+            <label for="heure_fin" class="form-label">Heure de fin:</label>
+            <input type="time" class="form-control" name="heure_fin" required>
+        </div>
+        <div class="mb-3">
+            <label for="lieux" class="form-label">Lieux:</label>
+            <input type="text" class="form-control" name="lieux" required>
+        </div>
+        <div class="mb-3">
+            <label for="date_limite" class="form-label">Date limite:</label>
+            <input type="date" class="form-control" name="date_limite" required>
+        </div>
+        <div class="mb-3">
+            <label for="nbmax" class="form-label">Nombre maximum de participants:</label>
+            <input type="number" class="form-control" name="nbmax" required>
+        </div>
+        <div class="mb-3">
+            <label for="id_formation" class="form-label">Formation:</label>
+            <?php
+            include_once("Functions/functions.php");
+            $formations = getFormations();
+            echo "<select class='form-select' name='id_formation'>";
+            foreach ($formations as $formation) {
+                echo "<option value='" . $formation['id_formation'] . "'>" . $formation['libelle_formation'] . "</option>";
+            }
+            echo '</select>';
+            ?>
+        </div>
+
+        <button type="button" class="btn btn-primary" onclick="creerSession()">Créer Session</button>
+    </form>
+
 </section>
 <div id="message-container"
      style="position: fixed; top: 10px; right: 10px; padding: 10px; background-color: #4CAF50; color: #fff; display: none;"></div>
@@ -199,6 +283,30 @@ if (isset($_SESSION['user'])) {
         document.getElementById('exportModal').style.display = 'none';
     });
 
+    // Fonction Ajax pour créer une formation EN TEST
+    function creerFormation() {
+        $.ajax({
+            type: "POST",
+            url: "Functions/actions.php",
+            data: $("#formFormation").serialize() + "&action=creerFormation",
+            success: function (response) {
+                alert(response);
+            }
+        });
+    }
+
+    //Fonction Ajax pour créer une session EN TEST
+    function creerSession() {
+        $.ajax({
+            type: "POST",
+            url: "Functions/actions.php",
+            data: $("#formSession").serialize() + "&action=creerSession",
+            success: function (response) {
+                alert(response);
+            }
+        });
+    }
+
     function afficherMessage(message) {
         //Affiche le message dans le coin de l'écran
         var messageContainer = $('#message-container');
@@ -215,6 +323,7 @@ if (isset($_SESSION['user'])) {
         document.getElementById('loader-container').style.display = "flex";
     });
 </script>
+
 
 </body>
 </html>
