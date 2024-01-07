@@ -18,6 +18,15 @@
 </main>
 
 <?php include 'includes/footer.html'; ?>
+<?php include 'includes/loading.html'; ?>
 </body>
+<script>
+    window.addEventListener('load', function () {
+        document.getElementById('loader-container').style.display = "none";
+    });
+    window.addEventListener('beforeunload', function () {
+        document.getElementById('loader-container').style.display = "flex";
+    });
+</script>
 
 </html>

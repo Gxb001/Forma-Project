@@ -310,13 +310,13 @@ function getSessionDetails($idSession)
 function verif_inscription_count($id_utilisateur)
 {
     $connexion = obtenirConnexion();
-    $sql = "SELECT COUNT(*) FROM inscription WHERE id_utilisateur = '$id_utilisateur' AND YEAR(date_inscription) = YEAR(CURDATE()) AND etat = 'Acceptée'";
+    $sql = "SELECT COUNT(*) FROM inscription WHERE id_utilisateur = '$id_utilisateur' AND YEAR(date_inscription) = YEAR(CURDATE()) AND etat = 'Acceptée' or etat = 'En Cours'";
 
     try {
         $result = $connexion->query($sql);
         $count = $result->fetchColumn();
 
-        // Vérifier si le nombre d'inscriptions est inférieur à 3
+        //Vérifier si le nombre d'inscriptions est inférieur à 3
         return $count < 3;
     } catch (PDOException $e) {
         return false;

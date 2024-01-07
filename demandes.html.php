@@ -53,6 +53,7 @@ include "Functions/functions.php" ?>
 <div id="message-container"
      style="position: fixed; top: 10px; right: 10px; padding: 10px; background-color: #4CAF50; color: #fff; display: none;"></div>
 <?php include 'Includes/footer.html'; ?>
+<?php include 'includes/loading.html'; ?>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"
         integrity="sha384-UG8ao2jwOWB7/oDdObZc6ItJmwUkR/PfMyt9Qs5AwX7PsnYn1CRKCTWyncPTWvaS"
         crossorigin="anonymous"></script>
@@ -107,6 +108,14 @@ include "Functions/functions.php" ?>
             window.location.reload();
         }, 2000);
     }
+</script>
+<script>
+    window.addEventListener('load', function () {
+        document.getElementById('loader-container').style.display = "none";
+    });
+    window.addEventListener('beforeunload', function () {
+        document.getElementById('loader-container').style.display = "flex";
+    });
 </script>
 </body>
 </html>

@@ -86,7 +86,15 @@ if (isset($_SESSION['user']) && $_SESSION['user'] == "authentified") {
 </section>
 
 <?php include 'includes/footer.html'; ?>
-
+<?php include 'includes/loading.html'; ?>
+<script>
+    window.addEventListener('load', function () {
+        document.getElementById('loader-container').style.display = "none";
+    });
+    window.addEventListener('beforeunload', function () {
+        document.getElementById('loader-container').style.display = "flex";
+    });
+</script>
 <script>
     const urlParams = new URLSearchParams(window.location.search);
     const data = urlParams.get('data');

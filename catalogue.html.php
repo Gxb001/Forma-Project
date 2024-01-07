@@ -64,9 +64,8 @@ include 'Functions/functions.php';
 </div>
 <div id="message-container"
      style="position: fixed; top: 10px; right: 10px; padding: 10px; background-color: #4CAF50; color: #fff; display: none;"></div>
-<?php
-include 'includes/footer.html';
-?>
+<?php include 'includes/footer.html'; ?>
+<?php include 'includes/loading.html'; ?>
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"
         integrity="sha384-UG8ao2jwOWB7/oDdObZc6ItJmwUkR/PfMyt9Qs5AwX7PsnYn1CRKCTWyncPTWvaS"
         crossorigin="anonymous"></script>
@@ -128,7 +127,7 @@ include 'includes/footer.html';
                 var contenuSession = '';
                 var nbMax = +session.nb_max;
                 var nbParticipants = +session.nb_participant;
-                if (session.nb_participant >= session.nb_max) {
+                if (nbParticipants >= nbMax) {
                     contenuSession = '<p>Session n°' + (index + 1) + '</p>' +
                         '<p>Session complète</p>';
                 } else {
@@ -213,9 +212,9 @@ include 'includes/footer.html';
                 } else if (data.includes('ttr-crs')) {
                     afficherMessage('Votre demande d\'inscription est déjà en cours de traitement');
                 } else if (data.includes('ttr-cra')) {
-                    afficherMessage('Votre demande d\'inscription a deja été acceptée');
+                    afficherMessage('Votre demande a deja été traitée');
                 } else if (data.includes('ss-cmpt')) {
-                    afficherMessage('La session est complète');
+                    afficherMessage('La session que vous demandez affiche complet');
                 } else if (data.includes('error')) {
                     afficherMessage('Une erreur est survenue');
                 }
@@ -234,6 +233,14 @@ include 'includes/footer.html';
         var messageContainer = $('#message-container');
         messageContainer.text(message).fadeIn().delay(2000).fadeOut();
     }
+</script>
+<script>
+    window.addEventListener('load', function () {
+        document.getElementById('loader-container').style.display = "none";
+    });
+    window.addEventListener('beforeunload', function () {
+        document.getElementById('loader-container').style.display = "flex";
+    });
 </script>
 </body>
 </html>
