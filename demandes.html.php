@@ -10,6 +10,13 @@
 <body>
 <?php include 'Includes/navbar.html.php';
 include "Functions/functions.php" ?>
+<?php
+if (isset($_SESSION['user'])) {
+    if ($_SESSION['role'] == "A") {
+        header("Location: accueil.html.php");
+    }
+}
+?>
 
 <div class="container mt-5">
     <h2 class="mb-4">Administration des Demandes d'Inscription</h2>

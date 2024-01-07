@@ -20,6 +20,13 @@ if (isset($_SESSION['user']) && $_SESSION['role'] != "A") {
     exit;
 }
 ?>
+<?php
+if (isset($_SESSION['user'])) {
+    if ($_SESSION['role'] == "A") {
+        header("Location: accueil.html.php");
+    }
+}
+?>
 <section>
     <h2>Tableau de Bord Administratif</h2>
 
