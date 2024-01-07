@@ -152,9 +152,14 @@ if (isset($_SESSION['user'])) {
             <?php
             include_once("Functions/functions.php");
             $formations = getFormations();
+            $formations = $formations->fetchAll();
             echo "<select class='form-select' name='id_formation'>";
-            foreach ($formations as $formation) {
-                echo "<option value='" . $formation['id_formation'] . "'>" . $formation['libelle_formation'] . "</option>";
+            if (count($formations) == 0) {
+                echo "<option value=''>Aucune formation</option>";
+            } else {
+                foreach ($formations as $formation) {
+                    echo "<option value='" . $formation['id_formation'] . "'>" . $formation['libelle_formation'] . "</option>";
+                }
             }
             echo '</select>';
             ?>
@@ -188,12 +193,19 @@ if (isset($_SESSION['user'])) {
 
                     //Assurez-vous que formations est un tableau avant d'appliquer forEach
                     if (Array.isArray(formations)) {
-                        formations.forEach(function (formation) {
+                        if (formations.length !== 0) {
+                            formations.forEach(function (formation) {
+                                var option = document.createElement('option');
+                                option.value = formation.id_formation;
+                                option.text = formation.libelle_formation;
+                                selectFormation.add(option);
+                            });
+                        } else {
                             var option = document.createElement('option');
-                            option.value = formation.id_formation;
-                            option.text = formation.libelle_formation;
+                            option.value = "";
+                            option.text = "Aucune formation";
                             selectFormation.add(option);
-                        });
+                        }
 
                         //Afficher la section de sélection de formation
                         document.getElementById('selectFormationSection').style.display = 'block';

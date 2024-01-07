@@ -18,34 +18,41 @@ include 'Functions/functions.php';
 ?>
 
 <section class="formations-container">
-    <h2>Catalogue des Formations</h2>
-    <?php
-    //récupération des formations
-    $formations = getFormations();
-    $res = $formations->fetchAll();
-    if (count($res) == 0) {
-        echo '<p>Nous avons aucune formation à vous proposer à ce jour</p>';
-        echo '<button onclick="redirectToAccueil()">Retour à l\'accueil</button>';
-    } else {
-        foreach ($res as $formation) {
-            $iddomaine = $formation['id_domaine'];
-            $domaine = getDomaine($iddomaine);
-            echo '<div class="formation">';
-            echo '<h3>' . $formation['libelle_formation'] . '</h3>';
-            echo '<p>Coût : ' . $formation['cout'] . '€ par participant</p>';
-            echo '<p>Contenu : ' . $formation['contenu'] . '</p>';
-            echo '<p>Domaine : ' . $domaine . '</p>';
-            echo '<p>Nombre de places : ' . $formation['nb_place'] . '</p>';
-            if (isset($_SESSION['user'])) {
-                echo '<button class="btn-inscrire" data-id="' . $formation["id_formation"] . '">S\'inscrire</button>';
-            } else {
-                echo '<button class="btn-inscrire" onclick="alert(\'Vous devez être connecté pour vous inscrire à une formation.\')">S\'inscrire</button>';
+    <h2 class="mb-4">Catalogue des Formations</h2>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        <?php
+        //récupération des formations
+        $formations = getFormations();
+        $res = $formations->fetchAll();
+        if (count($res) == 0) {
+            echo '<p class="text-center">Nous n\'avons aucune formation à vous proposer à ce jour</p>';
+            echo '<button class="btn btn-primary mx-auto" onclick="window.location.href=\'accueil.html.php\'">Retour à l\'accueil</button>';
+        } else {
+            foreach ($res as $formation) {
+                $iddomaine = $formation['id_domaine'];
+                $domaine = getDomaine($iddomaine);
+                echo '<div class="col">';
+                echo '<div class="card h-100">';
+                echo '<div class="card-body">';
+                echo '<h3 class="card-title">' . $formation['libelle_formation'] . '</h3>';
+                echo '<p class="card-text">Coût : ' . $formation['cout'] . '€ par participant</p>';
+                echo '<p class="card-text">Contenu : ' . $formation['contenu'] . '</p>';
+                echo '<p class="card-text">Domaine : ' . $domaine . '</p>';
+                echo '<p class="card-text">Nombre de places : ' . $formation['nb_place'] . '</p>';
+                if (isset($_SESSION['user'])) {
+                    echo '<button class="btn btn-success" data-id="' . $formation["id_formation"] . '">S\'inscrire</button>';
+                } else {
+                    echo '<button class="btn btn-success" onclick="alert(\'Vous devez être connecté pour vous inscrire à une formation.\')">S\'inscrire</button>';
+                }
+                echo '</div>';
+                echo '</div>';
+                echo '</div>';
             }
-            echo '</div>';
         }
-    }
-    ?>
+        ?>
+    </div>
 </section>
+
 <div class="modal fade" id="sessionsModal" tabindex="-1" aria-labelledby="sessionsModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -76,7 +83,7 @@ include 'Functions/functions.php';
     ];
 
     $(document).ready(function () {
-        $('.btn-inscrire').on('click', function () {
+        $('.btn-success').on('click', function () {
             var idFormation = $(this).data('id');
             $.ajax({
                 url: 'Functions/charger_sessions.php',
@@ -92,10 +99,6 @@ include 'Functions/functions.php';
             });
         });
     });
-
-    function redirectToAccueil() {
-        window.location.href = 'accueil.html.php';
-    }
 
     function formatHeure(heure) {
         var date = new Date("1970-01-01T" + heure + "Z");
