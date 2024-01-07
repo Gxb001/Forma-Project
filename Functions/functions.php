@@ -121,14 +121,13 @@ function getSessionsFormation($idFormation)
 
 
 /**
- * @param $id_session
  * @param $date_session
  * @param $heure_debut
  * @param $heure_fin
  * @param $lieux
- * @param $nb_participant
  * @param $date_limite
  * @param $id_formation
+ * @param $nbmax
  * @return void
  */
 // Fonction pour créer une nouvelle session
@@ -138,17 +137,18 @@ function creerNouvelleSession($date_session, $heure_debut, $heure_fin, $lieux, $
 
     try {
         // Préparer la requête d'insertion
-        $query = "INSERT INTO sessionsformations (date_session, heure_debut, heure_fin, lieux, nb_participant, date_limite, id_formation, nb_max) VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)";
+        $query = "INSERT INTO sessionformations (date_session, heure_debut, heure_fin, lieux, nb_participant, date_limite, id_formation, nb_max) VALUES (?, ?, ?, ?, 0, ?, ?, ?)";
         $stmt = $connexion->prepare($query);
 
         // Exécution de la requête avec les valeurs liées
-        $stmt->execute([$date_session, $heure_debut, $heure_fin, $lieux, 0, $date_limite, $id_formation, $nbmax]);
+        $stmt->execute([$date_session, $heure_debut, $heure_fin, $lieux, $date_limite, $id_formation, $nbmax]);
 
         echo "Nouvelle session créée avec succès.";
     } catch (PDOException $e) {
         echo "Erreur PDO : " . $e->getMessage();
     }
 }
+
 
 /**
  * @return array|false
@@ -559,6 +559,81 @@ function getAllUsersFormation($idFormation)
         $connexion = null;
     }
 }
+
+/**
+ * @param $idSession
+ * @return void
+ * @throws Exception
+ */
+function supprimerSession($idSession)
+{
+    $connexion = obtenirConnexion();
+
+    try {
+        $sql = "DELETE FROM sessionsformations WHERE id_session = :idSession";
+        $stmt = $connexion->prepare($sql);
+        $stmt->bindParam(':idSession', $idSession, PDO::PARAM_INT);
+        $stmt->execute();
+    } catch (PDOException $e) {
+        throw new Exception("Erreur PDO lors de la suppression de la session : " . $e->getMessage());
+    }
+}
+
+// Fonction pour supprimer une formation et toutes ses sessions
+/**
+ * @param $idFormation
+ * @return void
+ * @throws Exception
+ */
+function supprimerFormationEtSessions($idFormation)
+{
+    $connexion = obtenirConnexion();
+    $connexion->beginTransaction(); // Commencer une transaction
+
+    try {
+        //Supprimer toutes les sessions associées à la formation
+        $sqlSessions = "DELETE FROM sessionsformations WHERE id_formation = :idFormation";
+        $stmtSessions = $connexion->prepare($sqlSessions);
+        $stmtSessions->bindParam(':idFormation', $idFormation, PDO::PARAM_INT);
+        $stmtSessions->execute();
+
+        //Supprimer la formation elle-même
+        $sqlFormation = "DELETE FROM formations WHERE id_formation = :idFormation";
+        $stmtFormation = $connexion->prepare($sqlFormation);
+        $stmtFormation->bindParam(':idFormation', $idFormation, PDO::PARAM_INT);
+        $stmtFormation->execute();
+
+        //Valider la transaction
+        $connexion->commit();
+    } catch (PDOException $e) {
+        // En cas d'erreur, annuler la transaction
+        $connexion->rollBack();
+        throw new Exception("Erreur PDO lors de la suppression de la formation et de ses sessions : " . $e->getMessage());
+    }
+}
+
+
+/**
+ * @param $idFormation
+ * @return array
+ */
+function getSessionsByFormation($idFormation): array
+{
+    $connexion = obtenirConnexion();
+
+    try {
+        $query = "SELECT * FROM sessionsformations WHERE id_formation = :idFormation";
+        $stmt = $connexion->prepare($query);
+        $stmt->bindParam(':idFormation', $idFormation, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        return [];
+    }
+}
+
+
 
 
 

@@ -19,38 +19,41 @@ include 'Functions/functions.php';
 
 <section class="formations-container">
     <h2 class="mb-4">Catalogue des Formations</h2>
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        <?php
-        //récupération des formations
-        $formations = getFormations();
-        $res = $formations->fetchAll();
-        if (count($res) == 0) {
-            echo '<p class="text-center">Nous n\'avons aucune formation à vous proposer à ce jour</p>';
-            echo '<button class="btn btn-primary mx-auto" onclick="window.location.href=\'accueil.html.php\'">Retour à l\'accueil</button>';
-        } else {
-            foreach ($res as $formation) {
-                $iddomaine = $formation['id_domaine'];
-                $domaine = getDomaine($iddomaine);
-                echo '<div class="col">';
-                echo '<div class="card h-100">';
-                echo '<div class="card-body">';
-                echo '<h3 class="card-title">' . $formation['libelle_formation'] . '</h3>';
-                echo '<p class="card-text">Coût : ' . $formation['cout'] . '€ par participant</p>';
-                echo '<p class="card-text">Contenu : ' . $formation['contenu'] . '</p>';
-                echo '<p class="card-text">Domaine : ' . $domaine . '</p>';
-                echo '<p class="card-text">Nombre de places : ' . $formation['nb_place'] . '</p>';
-                if (isset($_SESSION['user'])) {
-                    echo '<button class="btn btn-success" data-id="' . $formation["id_formation"] . '">S\'inscrire</button>';
-                } else {
-                    echo '<button class="btn btn-success" onclick="alert(\'Vous devez être connecté pour vous inscrire à une formation.\')">S\'inscrire</button>';
-                }
-                echo '</div>';
-                echo '</div>';
-                echo '</div>';
+
+    <?php
+    $formations = getFormations();
+    $res = $formations->fetchAll();
+
+    if (count($res) == 0) {
+        echo '<p class="text-center">Nous n\'avons aucune formation à vous proposer à ce jour</p>';
+        echo '<button class="btn btn-primary mx-auto" onclick="window.location.href=\'accueil.html.php\'">Retour à l\'accueil</button>';
+    } else {
+        echo '<div class="d-flex flex-wrap">';
+
+        foreach ($res as $formation) {
+            $iddomaine = $formation['id_domaine'];
+            $domaine = getDomaine($iddomaine);
+
+            echo '<div class="card flex-fill mx-2 mb-4" style="width: 18rem;">';
+            echo '<div class="card-body">';
+            echo '<h3 class="card-title">' . $formation['libelle_formation'] . '</h3>';
+            echo '<p class="card-text">Coût : ' . $formation['cout'] . '€ par participant</p>';
+            echo '<p class="card-text">Contenu : ' . $formation['contenu'] . '</p>';
+            echo '<p class="card-text">Domaine : ' . $domaine . '</p>';
+            echo '<p class="card-text">Nombre de places : ' . $formation['nb_place'] . '</p>';
+
+            if (isset($_SESSION['user'])) {
+                echo '<button class="btn btn-success" data-id="' . $formation["id_formation"] . '">S\'inscrire</button>';
+            } else {
+                echo '<button class="btn btn-success" onclick="alert(\'Vous devez être connecté pour vous inscrire à une formation.\')">S\'inscrire</button>';
             }
+            echo '</div>';
+            echo '</div>';
         }
-        ?>
-    </div>
+
+        echo '</div>';
+    }
+    ?>
 </section>
 
 <div class="modal fade" id="sessionsModal" tabindex="-1" aria-labelledby="sessionsModalLabel" aria-hidden="true">

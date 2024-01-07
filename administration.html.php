@@ -80,95 +80,155 @@ if (isset($_SESSION['user'])) {
     </div>
 </section>
 
-<section>
-    <form id="formFormation">
-        <div class="mb-3">
-            <label for="libelle" class="form-label">Libellé:</label>
-            <input type="text" class="form-control" name="libelle" required>
-        </div>
-        <div class="mb-3">
-            <label for="cout" class="form-label">Coût:</label>
-            <input type="number" class="form-control" name="cout" required>
-        </div>
-        <div class="mb-3">
-            <label for="contenu" class="form-label">Contenu:</label>
-            <input type="text" class="form-control" name="contenu" required>
-        </div>
-        <div class="mb-3">
-            <label for="nb_place" class="form-label">Nombre de places:</label>
-            <input type="number" class="form-control" name="nb_place" required>
-        </div>
-        <div class="mb-3">
-            <label for="id_domaine" class="form-label">Domaine:</label>
-            <?php
-            include_once("Functions/functions.php");
-            $connexion = obtenirConnexion();
-            try {
-                $domaines = $connexion->query("SELECT * FROM domaines");
-                $domaines = $domaines->fetchAll();
-                echo "<select class='form-select' name='id_domaine'>";
-                foreach ($domaines as $domaine) {
-                    echo "<option value='" . $domaine['id_domaine'] . "'>" . $domaine['libelle_domaine'] . "</option>";
-                }
-            } catch (PDOException $e) {
-                echo $e->getMessage();
-            } finally {
-                $connexion = null;
-                echo '</select>';
-            }
-            ?>
-        </div>
-        <button type="button" class="btn btn-primary" onclick="creerFormation()">Créer Formation</button>
-    </form>
-
-    <!-- Formulaire pour créer une session -->
-    <form id="formSession">
-        <div class="mb-3">
-            <label for="date_session" class="form-label">Date de session:</label>
-            <input type="date" class="form-control" name="date_session" required>
-        </div>
-        <div class="mb-3">
-            <label for="heure_debut" class="form-label">Heure de début:</label>
-            <input type="time" class="form-control" name="heure_debut" required>
-        </div>
-        <div class="mb-3">
-            <label for="heure_fin" class="form-label">Heure de fin:</label>
-            <input type="time" class="form-control" name="heure_fin" required>
-        </div>
-        <div class="mb-3">
-            <label for="lieux" class="form-label">Lieux:</label>
-            <input type="text" class="form-control" name="lieux" required>
-        </div>
-        <div class="mb-3">
-            <label for="date_limite" class="form-label">Date limite:</label>
-            <input type="date" class="form-control" name="date_limite" required>
-        </div>
-        <div class="mb-3">
-            <label for="nbmax" class="form-label">Nombre maximum de participants:</label>
-            <input type="number" class="form-control" name="nbmax" required>
-        </div>
-        <div class="mb-3">
-            <label for="id_formation" class="form-label">Formation:</label>
-            <?php
-            include_once("Functions/functions.php");
-            $formations = getFormations();
-            $formations = $formations->fetchAll();
-            echo "<select class='form-select' name='id_formation'>";
-            if (count($formations) == 0) {
-                echo "<option value=''>Aucune formation</option>";
-            } else {
-                foreach ($formations as $formation) {
-                    echo "<option value='" . $formation['id_formation'] . "'>" . $formation['libelle_formation'] . "</option>";
-                }
-            }
-            echo '</select>';
-            ?>
+<section class="container mt-5">
+    <div class="row">
+        <!-- Formulaire pour créer une formation -->
+        <div class="col-md-6">
+            <form id="formFormation" class="card p-4">
+                <div class="mb-3">
+                    <label for="libelle" class="form-label">Libellé:</label>
+                    <input type="text" class="form-control" name="libelle" required>
+                </div>
+                <div class="mb-3">
+                    <label for="cout" class="form-label">Coût:</label>
+                    <input type="number" class="form-control" name="cout" required>
+                </div>
+                <div class="mb-3">
+                    <label for="contenu" class="form-label">Contenu:</label>
+                    <input type="text" class="form-control" name="contenu" required>
+                </div>
+                <div class="mb-3">
+                    <label for="nb_place" class="form-label">Nombre de places:</label>
+                    <input type="number" class="form-control" name="nb_place" required>
+                </div>
+                <div class="mb-3">
+                    <label for="id_domaine" class="form-label">Domaine:</label>
+                    <?php
+                    include_once("Functions/functions.php");
+                    $connexion = obtenirConnexion();
+                    try {
+                        $domaines = $connexion->query("SELECT * FROM domaines");
+                        $domaines = $domaines->fetchAll();
+                        echo "<select class='form-select' name='id_domaine'>";
+                        foreach ($domaines as $domaine) {
+                            echo "<option value='" . $domaine['id_domaine'] . "'>" . $domaine['libelle_domaine'] . "</option>";
+                        }
+                    } catch (PDOException $e) {
+                        echo $e->getMessage();
+                    } finally {
+                        $connexion = null;
+                        echo '</select>';
+                    }
+                    ?>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="creerFormation()">Créer Formation</button>
+            </form>
         </div>
 
-        <button type="button" class="btn btn-primary" onclick="creerSession()">Créer Session</button>
-    </form>
-
+        <!-- Formulaire pour créer une session -->
+        <div class="col-md-6">
+            <form id="formSession" class="card p-4">
+                <div class="mb-3">
+                    <label for="date_session" class="form-label">Date de session:</label>
+                    <input type="date" class="form-control" name="date_session" required>
+                </div>
+                <div class="mb-3">
+                    <label for="heure_debut" class="form-label">Heure de début:</label>
+                    <input type="time" class="form-control" name="heure_debut" required>
+                </div>
+                <div class="mb-3">
+                    <label for="heure_fin" class="form-label">Heure de fin:</label>
+                    <input type="time" class="form-control" name="heure_fin" required>
+                </div>
+                <div class="mb-3">
+                    <label for="lieux" class="form-label">Lieux:</label>
+                    <input type="text" class="form-control" name="lieux" required>
+                </div>
+                <div class="mb-3">
+                    <label for="date_limite" class="form-label">Date limite:</label>
+                    <input type="date" class="form-control" name="date_limite" required>
+                </div>
+                <div class="mb-3">
+                    <label for="nbmax" class="form-label">Nombre maximum de participants:</label>
+                    <input type="number" class="form-control" name="nbmax" required>
+                </div>
+                <div class="mb-3">
+                    <label for="id_formation" class="form-label">Formation:</label>
+                    <?php
+                    include_once("Functions/functions.php");
+                    $formations = getFormations();
+                    $formations = $formations->fetchAll();
+                    echo "<select class='form-select' name='id_formation'>";
+                    if (count($formations) == 0) {
+                        echo "<option value='N/A'>Aucune formation</option>";
+                    } else {
+                        foreach ($formations as $formation) {
+                            echo "<option value='" . $formation['id_formation'] . "'>" . $formation['libelle_formation'] . "</option>";
+                        }
+                    }
+                    echo '</select>';
+                    ?>
+                </div>
+                <button type="button" class="btn btn-primary" onclick="creerSession()">Créer Session</button>
+            </form>
+        </div>
+    </div>
 </section>
+<!-- Formulaire pour supprimer une formation -->
+<div class="col-md-6">
+    <form id="formSupprimerFormation" class="card p-4">
+        <div class="mb-3">
+            <label for="selectFormationSuppression">Sélectionner une formation à supprimer :</label>
+            <select class="form-select" id="selectFormationSuppression">
+                <?php
+                include_once("Functions/functions.php");
+                $formations = getFormations();
+                $formations = $formations->fetchAll();
+                if (count($formations) > 0) {
+                    foreach ($formations as $formation) {
+                        echo "<option value='" . $formation['id_formation'] . "'>" . $formation['libelle_formation'] . "</option>";
+                    }
+                } else {
+                    echo "<option value=''>Aucune formation disponible</option>";
+                }
+                ?>
+            </select>
+        </div>
+        <button type="button" class="btn btn-danger" onclick="supprimerFormation()">Supprimer Formation</button>
+    </form>
+</div>
+<!-- Formulaire pour supprimer une session -->
+<div class="col-md-6">
+    <form id="formSupprimerSession" class="card p-4">
+        <div class="mb-3">
+            <label for="selectFormationSuppressionSession">Sélectionner une formation :</label>
+            <select class="form-select" id="selectFormationSuppressionSession" onchange="chargerSessions()">
+                <?php
+                include_once("Functions/functions.php");
+                $formations = getFormations();
+                $formations = $formations->fetchAll();
+                if (count($formations) > 0) {
+                    foreach ($formations as $formation) {
+                        echo "<option value='" . $formation['id_formation'] . "'>" . $formation['libelle_formation'] . "</option>";
+                    }
+                } else {
+                    echo "<option value=''>Aucune formation disponible</option>";
+                }
+                ?>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="selectSessionSuppression">Sélectionner une session à supprimer :</label>
+            <select class="form-select" id="selectSessionSuppression">
+                <!-- Les options seront ajoutées dynamiquement ici -->
+            </select>
+        </div>
+        <button type="button" class="btn btn-danger" onclick="supprimerSession()">Supprimer Session</button>
+    </form>
+</div>
+
+
 <div id="message-container"
      style="position: fixed; top: 10px; right: 10px; padding: 10px; background-color: #4CAF50; color: #fff; display: none;"></div>
 <?php include 'includes/footer.html'; ?>
@@ -178,6 +238,8 @@ if (isset($_SESSION['user'])) {
         integrity="sha384-UG8ao2jwOWB7/oDdObZc6ItJmwUkR/PfMyt9Qs5AwX7PsnYn1CRKCTWyncPTWvaS"
         crossorigin="anonymous"></script>
 <script>
+
+
     document.getElementById('exportSelected').addEventListener('change', function () {
         if (this.checked) {
             $.ajax({
@@ -295,14 +357,60 @@ if (isset($_SESSION['user'])) {
         document.getElementById('exportModal').style.display = 'none';
     });
 
-    // Fonction Ajax pour créer une formation EN TEST
+
+    //Fonction pour charger les sessions en fonction de la formation sélectionnée
+    function chargerSessions() {
+        var idFormation = $('#selectFormationSuppressionSession').val();
+        if (idFormation) {
+            $.ajax({
+                url: 'Functions/getSessionsByFormation.php',
+                method: 'GET',
+                data: {idFormation: idFormation},
+                dataType: 'json',
+                success: function (sessions) {
+                    var selectSession = document.getElementById('selectSessionSuppression');
+                    selectSession.innerHTML = "";
+
+                    if (Array.isArray(sessions) && sessions.length > 0) {
+                        sessions.forEach(function (session) {
+                            var option = document.createElement('option');
+                            option.value = session.id_session;
+                            option.text = session.date_session; // Vous pouvez ajuster ceci selon vos besoins
+                            selectSession.add(option);
+                        });
+                    } else {
+                        var option = document.createElement('option');
+                        option.value = "";
+                        option.text = "Aucune session disponible";
+                        selectSession.add(option);
+                    }
+                },
+                error: function (error) {
+                    console.error('Erreur lors de la requête AJAX', error);
+                }
+            });
+        }
+    }
+
+
+    //Fonction Ajax pour créer une formation EN TEST
     function creerFormation() {
         $.ajax({
             type: "POST",
             url: "Functions/actions.php",
             data: $("#formFormation").serialize() + "&action=creerFormation",
             success: function (response) {
-                alert(response);
+                if (response.includes("valide")) {
+                    afficherMessage("Formation créée avec succès");
+                } else if (response.includes("Champs")) {
+                    afficherMessage("Veuillez remplir tous les champs");
+                } else if (response.includes("Cout")) {
+                    afficherMessage("Le cout doit être supérieur à 0");
+                } else if (response.includes("Place")) {
+                    afficherMessage("Le nombre de place doit être supérieur à 0");
+                } else if (response.includes("errf")) {
+                    afficherMessage("Erreur lors de la création de la formation");
+                }
             }
         });
     }
@@ -314,9 +422,90 @@ if (isset($_SESSION['user'])) {
             url: "Functions/actions.php",
             data: $("#formSession").serialize() + "&action=creerSession",
             success: function (response) {
-                alert(response);
+                if (response.includes("valide")) {
+                    afficherMessage("Session créée avec succès");
+                } else if (response.includes("Formation")) {
+                    afficherMessage("Aucune formation disponible");
+                } else if (response.includes("Champs")) {
+                    afficherMessage("Veuillez remplir tous les champs");
+                } else if (response.includes("Heure")) {
+                    afficherMessage("L'heure de début doit être inférieur à l'heure de fin");
+                } else if (response.includes("Date")) {
+                    afficherMessage("La date limite d'inscription doit être inférieur à la date de session");
+                } else if (response.includes("NbMax")) {
+                    afficherMessage("Le nombre de place doit être supérieur à 0");
+                } else if (response.includes("err")) {
+                    afficherMessage("Erreur lors de la création de la session");
+                }
             }
         });
+    }
+
+    //Fonction Ajax pour supprimer une formation
+    function deleteFormation(id_formation) {
+        $.ajax({
+            type: "POST",
+            url: "Functions/actions.php",
+            data: "id_formation=" + id_formation + "&action=deleteFormation",
+            success: function (response) {
+                if (response.includes("valide")) {
+                    afficherMessage("Formation supprimée avec succès");
+                } else if (response.includes("err")) {
+                    afficherMessage("Erreur lors de la suppression de la formation");
+                } else if (response.includes("Champs")) {
+                    afficherMessage("Veuillez spécifier l'ID de la formation à supprimer");
+                }
+            }
+        });
+    }
+
+    //Fonction Ajax pour supprimer une session
+    function deleteSession(id_session) {
+        $.ajax({
+            type: "POST",
+            url: "Functions/actions.php",
+            data: "id_session=" + id_session + "&action=deleteSession",
+            success: function (response) {
+                if (response.includes("valide")) {
+                    afficherMessage("Session supprimée avec succès");
+                } else if (response.includes("err")) {
+                    afficherMessage("Erreur lors de la suppression de la session");
+                } else if (response.includes("Champs")) {
+                    afficherMessage("Veuillez spécifier l'ID de la session à supprimer");
+                }
+            }
+        });
+    }
+
+    //Gestionnaire d'événements pour le bouton de suppression de formation
+    function supprimerFormation() {
+        var idFormation = $('#selectFormationSuppression').val();
+        if (idFormation) {
+            deleteFormation(idFormation);
+        } else {
+            afficherMessage("Veuillez sélectionner une formation à supprimer.");
+        }
+    }
+
+    function updateFormation() {
+        $.ajax({
+            type: "POST",
+            url: "Functions/actions.php",
+            data: $("#formFormation").serialize() + "&action=updateFormation",
+            success: function (response) {
+
+            }
+        });
+    }
+
+    // Gestionnaire d'événements pour le bouton de suppression de session
+    function supprimerSession() {
+        var idSession = $('#selectSessionSuppression').val();
+        if (idSession) {
+            deleteSession(idSession);
+        } else {
+            afficherMessage("Veuillez sélectionner une session à supprimer.");
+        }
     }
 
     function afficherMessage(message) {
@@ -324,7 +513,6 @@ if (isset($_SESSION['user'])) {
         var messageContainer = $('#message-container');
         messageContainer.text(message).fadeIn().delay(2000).fadeOut();
     }
-
 
 </script>
 <script>
@@ -335,7 +523,5 @@ if (isset($_SESSION['user'])) {
         document.getElementById('loader-container').style.display = "flex";
     });
 </script>
-
-
 </body>
 </html>
