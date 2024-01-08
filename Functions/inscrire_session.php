@@ -20,7 +20,7 @@ if (isset($_POST['idSession'], $_POST['idUtilisateur'])) {
     } elseif (inscriptionExisteDeja($idSession, $idUtilisateur)) {
         $etat = inscriptionExisteDeja($idSession, $idUtilisateur);
         if ($etat == "Acceptée" || $etat == "Refusée") {
-            echo json_encode(['ttr-cra' => 'Vous êtes déjà inscrit à cette session']);
+            echo json_encode(['ttr-cra' => 'Votre demande d\'inscription a déjà été traitée']);
         } else {
             echo json_encode(['ttr-crs' => 'Votre demande d\'inscription est déjà en cours de traitement']);
         }

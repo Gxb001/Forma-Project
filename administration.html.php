@@ -239,7 +239,6 @@ if (isset($_SESSION['user'])) {
         crossorigin="anonymous"></script>
 <script>
 
-
     document.getElementById('exportSelected').addEventListener('change', function () {
         if (this.checked) {
             $.ajax({
@@ -380,7 +379,7 @@ if (isset($_SESSION['user'])) {
                         });
                     } else {
                         var option = document.createElement('option');
-                        option.value = "";
+                        option.value = "N/A";
                         option.text = "Aucune session disponible";
                         selectSession.add(option);
                     }
@@ -413,6 +412,9 @@ if (isset($_SESSION['user'])) {
                 }
             }
         });
+        setTimeout(function () {
+            document.getElementById('formFormation').reset();
+        }, 1000);
     }
 
     //Fonction Ajax pour créer une session EN TEST
@@ -439,6 +441,9 @@ if (isset($_SESSION['user'])) {
                 }
             }
         });
+        setTimeout(function () {
+            document.getElementById('formSession').reset();
+        }, 1000);
     }
 
     //Fonction Ajax pour supprimer une formation
@@ -468,9 +473,11 @@ if (isset($_SESSION['user'])) {
             success: function (response) {
                 if (response.includes("valide")) {
                     afficherMessage("Session supprimée avec succès");
+                } else if (response.includes("Champs")) {
+                    afficherMessage("Veuillez choisir une session");
                 } else if (response.includes("err")) {
                     afficherMessage("Erreur lors de la suppression de la session");
-                } else if (response.includes("Champs")) {
+                } else if (response.includes("id")) {
                     afficherMessage("Veuillez spécifier l'ID de la session à supprimer");
                 }
             }
@@ -485,6 +492,9 @@ if (isset($_SESSION['user'])) {
         } else {
             afficherMessage("Veuillez sélectionner une formation à supprimer.");
         }
+        setTimeout(function () {
+            location.reload();
+        }, 1000);
     }
 
     function updateFormation() {
@@ -514,6 +524,7 @@ if (isset($_SESSION['user'])) {
         messageContainer.text(message).fadeIn().delay(2000).fadeOut();
     }
 
+    chargerSessions();
 </script>
 <script>
     window.addEventListener('load', function () {

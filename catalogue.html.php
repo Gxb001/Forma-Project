@@ -11,7 +11,43 @@
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 
 </head>
+<style>
+    .statut-session {
+        color: #007bff;
+        font-weight: bold;
+    }
+
+    .session-details {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .statut-session {
+        color: #007bff;
+        font-weight: bold;
+    }
+
+    .btn-inscrire-session {
+        background-color: #28a745;
+        color: #fff;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-inscrire-session:hover {
+        background-color: #218838;
+    }
+
+
+</style>
 <body>
+
 <?php
 include 'includes/navbar.html.php';
 include 'Functions/functions.php';
@@ -25,8 +61,12 @@ include 'Functions/functions.php';
     $res = $formations->fetchAll();
 
     if (count($res) == 0) {
-        echo '<p class="text-center">Nous n\'avons aucune formation à vous proposer à ce jour</p>';
-        echo '<button class="btn btn-primary mx-auto" onclick="window.location.href=\'accueil.html.php\'">Retour à l\'accueil</button>';
+        echo '<div class="card text-center mx-auto" style="width: 18rem;">';
+        echo '<div class="card-body">';
+        echo '<p class="card-text">Nous n\'avons aucune formation à vous proposer à ce jour</p>';
+        echo '<button class="btn btn-primary" onclick="window.location.href=\'accueil.html.php\'">Retour à l\'accueil</button>';
+        echo '</div>';
+        echo '</div>';
     } else {
         echo '<div class="d-flex flex-wrap">';
 
@@ -139,6 +179,7 @@ include 'Functions/functions.php';
                 } else {
                     var placerestantes = nbMax - nbParticipants;
                     contenuSession =
+                        '<div class="session-details">' +
                         '<p>Session n°' + (index + 1) + '</p>' +
                         '<p>Date limite: ' + dateLimiteFormatted + '</p>' +
                         '<p>Date de session: ' + dateSessionFormatted + '</p>' +
@@ -146,9 +187,10 @@ include 'Functions/functions.php';
                         '<p>Heure de fin: ' + formatHeure(session.heure_fin) + '</p>' +
                         '<p>Lieu: ' + session.lieux + '</p>' +
                         '<p>Nombre de place(s): ' + placerestantes + '/' + session.nb_max + '</p>' +
-                        '<p>Statut: ' + statut + '</p>' +
+                        '<p class="statut-session">Statut: ' + statut + '</p>' +
                         '<button class="btn-inscrire-session" data-id-session="' + session.id_session + '" data-id-utilisateur="' + <?php echo $_SESSION['id']; ?> +'">S\'inscrire</button>' +
-                        '<hr>';
+                        '<hr>' +
+                        '</div>';
                 }
                 $('#sessionsModalBody').append(contenuSession);
             });

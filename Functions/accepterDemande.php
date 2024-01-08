@@ -1,6 +1,6 @@
 <?php
 
-include 'functions.php';
+include_once 'functions.php';
 $connexion = obtenirConnexion();
 
 if (isset($_POST['idSession'], $_POST['idUtilisateur'])) {

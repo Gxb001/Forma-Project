@@ -69,9 +69,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
                 break;
             case "deleteSession":
-                $idSession = $_POST["idSession"];
+                $idSession = $_POST["id_session"];
                 if ($idSession == "") {
                     echo json_encode("Champs", "Veuillez spécifier l'ID de la session à supprimer");
+                    return;
+                } elseif ($idSession == "N/A") {
+                    echo json_encode("Champs", "Veuillez choisir une session");
                     return;
                 }
                 try {
@@ -82,9 +85,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
                 break;
             case "deleteFormation":
-                $idFormation = $_POST["idFormation"];
+                $idFormation = $_POST["id_formation"];
                 if ($idFormation == "") {
-                    echo json_encode("Champs", "Veuillez spécifier l'ID de la formation à supprimer");
+                    echo json_encode("id", "Veuillez spécifier l'ID de la formation à supprimer");
                     return;
                 }
                 try {
