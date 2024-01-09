@@ -9,12 +9,13 @@
 </head>
 <body>
 <?php include 'Includes/navbar.html.php';
-include "Functions/functions.php" ?>
+include_once "Functions/functions.php"
+?>
 <?php
-if (isset($_SESSION['user'])) {
-    if ($_SESSION['role'] != "A") {
-        header("Location: accueil.html.php");
-    }
+include 'includes/navbar.html.php';
+if ((isset($_SESSION['user']) && $_SESSION['role'] != "A") || !isset($_SESSION['user'])) {
+    header("Location: accueil.html.php");
+    exit;
 }
 ?>
 

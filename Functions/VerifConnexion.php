@@ -1,5 +1,5 @@
 <?php
-include("functions.php");
+include_once("functions.php");
 $connexion = obtenirConnexion();
 $email = $_POST['email'];
 $password = $_POST['mdp'];

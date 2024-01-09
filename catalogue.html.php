@@ -195,7 +195,7 @@ include 'Functions/functions.php';
                 $('#sessionsModalBody').append(contenuSession);
             });
         } else {
-            $('#sessionsModalBody').html('<p>Nous n\'avons pour le moment aucune session à vous proposer pour cette formation.</p>');
+            $('#sessionsModalBody').html('<p>Nous n\'avons pour le moment aucune session à venir pour cette formation.</p>');
         }
         $('.btn-inscrire-session').on('click', function () {
             var idSession = $(this).data('id-session');

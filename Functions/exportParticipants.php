@@ -1,7 +1,7 @@
 <?php
 
 //Inclure votre fichier de fonctions
-include 'functions.php';
+include_once 'functions.php';
 
 if (isset($_POST['exportType'])) {
 

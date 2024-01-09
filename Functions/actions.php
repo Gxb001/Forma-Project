@@ -97,6 +97,76 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     echo json_encode("err", 'Erreur lors de la suppression de la formation et de ses sessions');
                 }
                 break;
+            case "modifierFormation":
+                $idFormation = $_POST["id_formation"];
+                $libelle = $_POST["libelle"];
+                $cout = $_POST["cout"];
+                $contenu = $_POST["contenu"];
+                $nb_place = $_POST["nb_place"];
+                $id_domaine = $_POST["id_domaine"];
+                if ($idFormation == "") {
+                    echo json_encode("id", "Veuillez spécifier l'ID de la formation à modifier");
+                    return;
+                }
+                if ($libelle == "" || $cout == "" || $contenu == "" || $nb_place == "" || $id_domaine == "") {
+                    echo json_encode("Champs", 'Veuillez remplir tous les champs');
+                    return;
+                }
+                if ($cout <= 0) {
+                    echo json_encode("Cout", 'Le cout doit être supérieur à 0');
+                    return;
+                }
+                if ($nb_place <= 0) {
+                    echo json_encode("Place", 'Le nombre de place doit être supérieur à 0');
+                    return;
+                }
+                try {
+                    modifierFormation($idFormation, $libelle, $cout, $contenu, $nb_place, $id_domaine);
+                    echo json_encode("valide", 'Formation modifiée avec succès');
+                } catch (Exception $e) {
+                    echo json_encode("err", 'Erreur lors de la modification de la formation');
+                }
+                break;
+            case "modifierSession":
+                $idSession = $_POST["id_session"];
+                $date_session = $_POST["date_session"];
+                $heure_debut = $_POST["heure_debut"];
+                $heure_fin = $_POST["heure_fin"];
+                $lieux = $_POST["lieux"];
+                $date_limite = $_POST["date_limite"];
+                $id_formation = $_POST["id_formation"];
+                $nbmax = $_POST["nbmax"];
+                if ($idSession == "") {
+                    echo json_encode("id", "Veuillez spécifier l'ID de la session à modifier");
+                    return;
+                }
+                if ($date_session == "" || $heure_debut == "" || $heure_fin == "" || $lieux == "" || $date_limite == "" || $id_formation == "" || $nbmax == "") {
+                    if ($id_formation && $id_formation == "N/A") {
+                        echo json_encode("Formation", "Veuillez choisir une formation");
+                        return;
+                    }
+                    echo json_encode("Champs", 'Veuillez remplir tous les champs');
+                    return;
+                }
+                if ($heure_debut >= $heure_fin) {
+                    echo json_encode("Heure", 'L\'heure de début doit être inférieur à l\'heure de fin');
+                    return;
+                }
+                if ($date_session < $date_limite) {
+                    echo json_encode("Date", 'La date limite d\'inscription doit être inférieur à la date de session');
+                    return;
+                }
+                if ($nbmax <= 0) {
+                    echo json_encode("NbMax", 'Le nombre de place doit être supérieur à 0');
+                    return;
+                }
+                try {
+                    modifierSession($idSession, $date_session, $heure_debut, $heure_fin, $lieux, $date_limite, $id_formation, $nbmax);
+                    echo json_encode("valide", 'Session modifiée avec succès');
+                } catch (Exception $e) {
+                    echo json_encode("err", 'Erreur lors de la modification de la session');
+                }
+                break;
 
             default:
                 //Gestion d'une action inconnue

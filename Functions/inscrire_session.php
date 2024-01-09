@@ -1,5 +1,5 @@
 <?php
-include('functions.php');
+include_once('functions.php');
 session_start();
 
 if (isset($_POST['idSession'], $_POST['idUtilisateur'])) {

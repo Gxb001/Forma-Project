@@ -11,29 +11,63 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
+<style>
+    .dashboard-buttons {
+        margin-bottom: 20px;
+    }
+
+    .dashboard-buttons button {
+        margin-right: 10px;
+    }
+
+    #CreateSessionTab {
+        display: none;
+    }
+
+    #DelFormationTab {
+        display: none;
+    }
+
+    #DelSessionTab {
+        display: none;
+    }
+</style>
 <body>
 <?php
 include 'includes/navbar.html.php';
-if (isset($_SESSION['user']) && $_SESSION['role'] != "A") {
+if ((isset($_SESSION['user']) && $_SESSION['role'] != "A") || !isset($_SESSION['user'])) {
     header("Location: accueil.html.php");
     exit;
 }
 ?>
-<?php
-if (isset($_SESSION['user'])) {
-    if ($_SESSION['role'] != "A") {
-        header("Location: accueil.html.php");
-    }
-}
-?>
+
 <section>
     <h2>Tableau de Bord Administratif</h2>
 
     <!-- Bouton pour ouvrir le modal -->
-    <button type="button" class="btn btn-outline-secondary btn-sm float-right mt-2 mr-2" data-bs-toggle="modal"
+    <button type="button" class="btn btn-outline-secondary btn-sm float-end mt-2 mr-2" data-bs-toggle="modal"
             data-bs-target="#exportModal">
         Exporter les participants
     </button>
+
+
+    <!-- Boutons du tableau de bord -->
+    <div class="dashboard-buttons">
+        <button type="button" class="btn btn-primary" onclick="afficherDiv('CreateFormationTab')">Créer une formation
+        </button>
+        <button type="button" class="btn btn-primary" onclick="afficherDiv('CreateSessionTab')">Créer une session
+        </button>
+        <button type="button" class="btn btn-primary" onclick="afficherDiv('DelFormationTab')">Supprimer une formation
+        </button>
+        <button type="button" class="btn btn-primary" onclick="afficherDiv('DelSessionTab')">Supprimer une session
+        </button>
+        <button type="button" class="btn btn-primary" onclick="afficherDiv('UpdateFormationTab')">Modifier une
+            formation
+        </button>
+        <button type="button" class="btn btn-primary" onclick="afficherDiv('UpdateSessionTab')">Modifier une session
+        </button>
+    </div>
+
 
     <div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exportModalLabel"
          aria-hidden="true">
@@ -80,153 +114,155 @@ if (isset($_SESSION['user'])) {
     </div>
 </section>
 
-<section class="container mt-5">
-    <div class="row">
-        <!-- Formulaire pour créer une formation -->
-        <div class="col-md-6">
-            <form id="formFormation" class="card p-4">
-                <div class="mb-3">
-                    <label for="libelle" class="form-label">Libellé:</label>
-                    <input type="text" class="form-control" name="libelle" required>
-                </div>
-                <div class="mb-3">
-                    <label for="cout" class="form-label">Coût:</label>
-                    <input type="number" class="form-control" name="cout" required>
-                </div>
-                <div class="mb-3">
-                    <label for="contenu" class="form-label">Contenu:</label>
-                    <input type="text" class="form-control" name="contenu" required>
-                </div>
-                <div class="mb-3">
-                    <label for="nb_place" class="form-label">Nombre de places:</label>
-                    <input type="number" class="form-control" name="nb_place" required>
-                </div>
-                <div class="mb-3">
-                    <label for="id_domaine" class="form-label">Domaine:</label>
-                    <?php
-                    include_once("Functions/functions.php");
-                    $connexion = obtenirConnexion();
-                    try {
-                        $domaines = $connexion->query("SELECT * FROM domaines");
-                        $domaines = $domaines->fetchAll();
-                        echo "<select class='form-select' name='id_domaine'>";
-                        foreach ($domaines as $domaine) {
-                            echo "<option value='" . $domaine['id_domaine'] . "'>" . $domaine['libelle_domaine'] . "</option>";
-                        }
-                    } catch (PDOException $e) {
-                        echo $e->getMessage();
-                    } finally {
-                        $connexion = null;
-                        echo '</select>';
+<section class="container mt-5 d-flex justify-content-center">
+    <!-- Formulaire pour créer une formation -->
+    <div class="col-md-6" id="CreateFormationTab">
+        <h2>Formation</h2>
+        <form id="formFormation" class="card p-4">
+            <div class="mb-3">
+                <label for="libelle" class="form-label">Libellé:</label>
+                <input type="text" class="form-control" name="libelle" required>
+            </div>
+            <div class="mb-3">
+                <label for="cout" class="form-label">Coût:</label>
+                <input type="number" class="form-control" name="cout" required>
+            </div>
+            <div class="mb-3">
+                <label for="contenu" class="form-label">Contenu:</label>
+                <input type="text" class="form-control" name="contenu" required>
+            </div>
+            <div class="mb-3">
+                <label for="nb_place" class="form-label">Nombre de places:</label>
+                <input type="number" class="form-control" name="nb_place" required>
+            </div>
+            <div class="mb-3">
+                <label for="id_domaine" class="form-label">Domaine:</label>
+                <?php
+                include_once("Functions/functions.php");
+                $connexion = obtenirConnexion();
+                try {
+                    $domaines = $connexion->query("SELECT * FROM domaines");
+                    $domaines = $domaines->fetchAll();
+                    echo "<select class='form-select' name='id_domaine'>";
+                    foreach ($domaines as $domaine) {
+                        echo "<option value='" . $domaine['id_domaine'] . "'>" . $domaine['libelle_domaine'] . "</option>";
                     }
-                    ?>
-                </div>
-                <button type="button" class="btn btn-primary" onclick="creerFormation()">Créer Formation</button>
-            </form>
-        </div>
+                } catch (PDOException $e) {
+                    echo $e->getMessage();
+                } finally {
+                    $connexion = null;
+                    echo '</select>';
+                }
+                ?>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="creerFormation()">Créer Formation</button>
+        </form>
+    </div>
 
-        <!-- Formulaire pour créer une session -->
-        <div class="col-md-6">
-            <form id="formSession" class="card p-4">
-                <div class="mb-3">
-                    <label for="date_session" class="form-label">Date de session:</label>
-                    <input type="date" class="form-control" name="date_session" required>
-                </div>
-                <div class="mb-3">
-                    <label for="heure_debut" class="form-label">Heure de début:</label>
-                    <input type="time" class="form-control" name="heure_debut" required>
-                </div>
-                <div class="mb-3">
-                    <label for="heure_fin" class="form-label">Heure de fin:</label>
-                    <input type="time" class="form-control" name="heure_fin" required>
-                </div>
-                <div class="mb-3">
-                    <label for="lieux" class="form-label">Lieux:</label>
-                    <input type="text" class="form-control" name="lieux" required>
-                </div>
-                <div class="mb-3">
-                    <label for="date_limite" class="form-label">Date limite:</label>
-                    <input type="date" class="form-control" name="date_limite" required>
-                </div>
-                <div class="mb-3">
-                    <label for="nbmax" class="form-label">Nombre maximum de participants:</label>
-                    <input type="number" class="form-control" name="nbmax" required>
-                </div>
-                <div class="mb-3">
-                    <label for="id_formation" class="form-label">Formation:</label>
+    <!-- Formulaire pour créer une session -->
+    <div class="col-md-6" id="CreateSessionTab">
+        <h2>Session</h2>
+        <form id="formSession" class="card p-4">
+            <div class="mb-3">
+                <label for="date_session" class="form-label">Date de session:</label>
+                <input type="date" class="form-control" name="date_session" required>
+            </div>
+            <div class="mb-3">
+                <label for="heure_debut" class="form-label">Heure de début:</label>
+                <input type="time" class="form-control" name="heure_debut" required>
+            </div>
+            <div class="mb-3">
+                <label for="heure_fin" class="form-label">Heure de fin:</label>
+                <input type="time" class="form-control" name="heure_fin" required>
+            </div>
+            <div class="mb-3">
+                <label for="lieux" class="form-label">Lieux:</label>
+                <input type="text" class="form-control" name="lieux" required>
+            </div>
+            <div class="mb-3">
+                <label for="date_limite" class="form-label">Date limite:</label>
+                <input type="date" class="form-control" name="date_limite" required>
+            </div>
+            <div class="mb-3">
+                <label for="nbmax" class="form-label">Nombre maximum de participants:</label>
+                <input type="number" class="form-control" name="nbmax" required>
+            </div>
+            <div class="mb-3">
+                <label for="id_formation" class="form-label">Formation:</label>
+                <?php
+                include_once("Functions/functions.php");
+                $formations = getFormations();
+                $formations = $formations->fetchAll();
+                echo "<select class='form-select' name='id_formation'>";
+                if (count($formations) == 0) {
+                    echo "<option value='N/A'>Aucune formation</option>";
+                } else {
+                    foreach ($formations as $formation) {
+                        echo "<option value='" . $formation['id_formation'] . "'>" . $formation['libelle_formation'] . "</option>";
+                    }
+                }
+                echo '</select>';
+                ?>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="creerSession()">Créer Session</button>
+        </form>
+    </div>
+    <!-- Formulaire pour supprimer une formation -->
+    <div class="col-md-6" id="DelFormationTab">
+        <h2>Formation</h2>
+        <form id="formSupprimerFormation" class="card p-4">
+            <div class="mb-3">
+                <label for="selectFormationSuppression">Sélectionner une formation à supprimer :</label>
+                <select class="form-select" id="selectFormationSuppression">
                     <?php
                     include_once("Functions/functions.php");
                     $formations = getFormations();
                     $formations = $formations->fetchAll();
-                    echo "<select class='form-select' name='id_formation'>";
-                    if (count($formations) == 0) {
-                        echo "<option value='N/A'>Aucune formation</option>";
-                    } else {
+                    if (count($formations) > 0) {
                         foreach ($formations as $formation) {
                             echo "<option value='" . $formation['id_formation'] . "'>" . $formation['libelle_formation'] . "</option>";
                         }
+                    } else {
+                        echo "<option value=''>Aucune formation disponible</option>";
                     }
-                    echo '</select>';
                     ?>
-                </div>
-                <button type="button" class="btn btn-primary" onclick="creerSession()">Créer Session</button>
-            </form>
-        </div>
+                </select>
+            </div>
+            <button type="button" class="btn btn-danger" onclick="supprimerFormation()">Supprimer Formation</button>
+        </form>
+    </div>
+    <!-- Formulaire pour supprimer une session -->
+    <div class="col-md-6" id="DelSessionTab">
+        <h2>Session</h2>
+        <form id="formSupprimerSession" class="card p-4">
+            <div class="mb-3">
+                <label for="selectFormationSuppressionSession">Sélectionner une formation :</label>
+                <select class="form-select" id="selectFormationSuppressionSession" onchange="chargerSessions()">
+                    <?php
+                    include_once("Functions/functions.php");
+                    $formations = getFormations();
+                    $formations = $formations->fetchAll();
+                    if (count($formations) > 0) {
+                        foreach ($formations as $formation) {
+                            echo "<option value='" . $formation['id_formation'] . "'>" . $formation['libelle_formation'] . "</option>";
+                        }
+                    } else {
+                        echo "<option value=''>Aucune formation disponible</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="selectSessionSuppression">Sélectionner une session à supprimer :</label>
+                <select class="form-select" id="selectSessionSuppression">
+                    <!-- Les options seront ajoutées dynamiquement ici -->
+                </select>
+            </div>
+            <button type="button" class="btn btn-danger" onclick="supprimerSession()">Supprimer Session</button>
+        </form>
     </div>
 </section>
-<!-- Formulaire pour supprimer une formation -->
-<div class="col-md-6">
-    <form id="formSupprimerFormation" class="card p-4">
-        <div class="mb-3">
-            <label for="selectFormationSuppression">Sélectionner une formation à supprimer :</label>
-            <select class="form-select" id="selectFormationSuppression">
-                <?php
-                include_once("Functions/functions.php");
-                $formations = getFormations();
-                $formations = $formations->fetchAll();
-                if (count($formations) > 0) {
-                    foreach ($formations as $formation) {
-                        echo "<option value='" . $formation['id_formation'] . "'>" . $formation['libelle_formation'] . "</option>";
-                    }
-                } else {
-                    echo "<option value=''>Aucune formation disponible</option>";
-                }
-                ?>
-            </select>
-        </div>
-        <button type="button" class="btn btn-danger" onclick="supprimerFormation()">Supprimer Formation</button>
-    </form>
-</div>
-<!-- Formulaire pour supprimer une session -->
-<div class="col-md-6">
-    <form id="formSupprimerSession" class="card p-4">
-        <div class="mb-3">
-            <label for="selectFormationSuppressionSession">Sélectionner une formation :</label>
-            <select class="form-select" id="selectFormationSuppressionSession" onchange="chargerSessions()">
-                <?php
-                include_once("Functions/functions.php");
-                $formations = getFormations();
-                $formations = $formations->fetchAll();
-                if (count($formations) > 0) {
-                    foreach ($formations as $formation) {
-                        echo "<option value='" . $formation['id_formation'] . "'>" . $formation['libelle_formation'] . "</option>";
-                    }
-                } else {
-                    echo "<option value=''>Aucune formation disponible</option>";
-                }
-                ?>
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label for="selectSessionSuppression">Sélectionner une session à supprimer :</label>
-            <select class="form-select" id="selectSessionSuppression">
-                <!-- Les options seront ajoutées dynamiquement ici -->
-            </select>
-        </div>
-        <button type="button" class="btn btn-danger" onclick="supprimerSession()">Supprimer Session</button>
-    </form>
-</div>
 
 
 <div id="message-container"
@@ -356,6 +392,11 @@ if (isset($_SESSION['user'])) {
         document.getElementById('exportModal').style.display = 'none';
     });
 
+    var moisEnFrancais = [
+        'janvier', 'février', 'mars', 'avril', 'mai', 'juin',
+        'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'
+    ];
+
 
     //Fonction pour charger les sessions en fonction de la formation sélectionnée
     function chargerSessions() {
@@ -372,9 +413,11 @@ if (isset($_SESSION['user'])) {
 
                     if (Array.isArray(sessions) && sessions.length > 0) {
                         sessions.forEach(function (session) {
+                            date = new Date(session.date_session);
+                            dateSessionFormat = date.getDate() + ' ' + moisEnFrancais[date.getMonth()] + ' ' + date.getFullYear();
                             var option = document.createElement('option');
                             option.value = session.id_session;
-                            option.text = session.date_session; // Vous pouvez ajuster ceci selon vos besoins
+                            option.text = dateSessionFormat + ' à ' + session.lieux + ' de ' + formatHeure(session.heure_debut) + ' à ' + formatHeure(session.heure_fin);
                             selectSession.add(option);
                         });
                     } else {
@@ -388,6 +431,25 @@ if (isset($_SESSION['user'])) {
                     console.error('Erreur lors de la requête AJAX', error);
                 }
             });
+        }
+    }
+
+    var allTabs = ["CreateFormationTab", "CreateSessionTab", "DelFormationTab", "DelSessionTab", "UpdateFormationTab", "UpdateSessionTab"];
+
+    function afficherDiv(id) {
+        var div = document.getElementById(id);
+        if (div) {
+            for (var i = 0; i < allTabs.length; i++) {
+                if (allTabs[i] !== id) {
+                    var otherDiv = document.getElementById(allTabs[i]);
+                    if (otherDiv) {
+                        otherDiv.style.display = "none";
+                    }
+                }
+            }
+            div.style.display = "block";
+        } else {
+            console.error("L'élément avec l'ID " + id + " n'a pas été trouvé.");
         }
     }
 
@@ -414,6 +476,9 @@ if (isset($_SESSION['user'])) {
         });
         setTimeout(function () {
             document.getElementById('formFormation').reset();
+        }, 1000);
+        setTimeout(function () {
+            location.reload();
         }, 1000);
     }
 
@@ -443,6 +508,9 @@ if (isset($_SESSION['user'])) {
         });
         setTimeout(function () {
             document.getElementById('formSession').reset();
+        }, 1000);
+        setTimeout(function () {
+            location.reload();
         }, 1000);
     }
 
@@ -494,18 +562,7 @@ if (isset($_SESSION['user'])) {
         }
         setTimeout(function () {
             location.reload();
-        }, 1000);
-    }
-
-    function updateFormation() {
-        $.ajax({
-            type: "POST",
-            url: "Functions/actions.php",
-            data: $("#formFormation").serialize() + "&action=updateFormation",
-            success: function (response) {
-
-            }
-        });
+        }, 2000);
     }
 
     // Gestionnaire d'événements pour le bouton de suppression de session
@@ -516,6 +573,27 @@ if (isset($_SESSION['user'])) {
         } else {
             afficherMessage("Veuillez sélectionner une session à supprimer.");
         }
+        setTimeout(function () {
+            location.reload();
+        }, 2000);
+    }
+
+    function updateFormation() {
+        $.ajax({
+            type: "POST",
+            url: "Functions/actions.php",
+            data: $("#formFormation").serialize() + "&action=updateFormation",
+            success: function (response) {
+            }
+        });
+    }
+
+    function formatHeure(heure) {
+        var date = new Date("1970-01-01T" + heure + "Z");
+        var heures = date.getUTCHours();
+        var minutes = date.getUTCMinutes();
+        var heureFormatee = heures + ":" + (minutes < 10 ? '0' : '') + minutes;
+        return heureFormatee;
     }
 
     function afficherMessage(message) {
@@ -523,6 +601,7 @@ if (isset($_SESSION['user'])) {
         var messageContainer = $('#message-container');
         messageContainer.text(message).fadeIn().delay(2000).fadeOut();
     }
+
 
     chargerSessions();
 </script>

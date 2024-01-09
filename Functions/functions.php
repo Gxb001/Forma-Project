@@ -639,6 +639,88 @@ function getSessionsByFormation($idFormation): array
     }
 }
 
+/**
+ * @param $idSession
+ * @param $date_session
+ * @param $heure_debut
+ * @param $heure_fin
+ * @param $lieux
+ * @param $date_limite
+ * @param $nbmax
+ * @return void
+ * @throws Exception
+ */
+function modifierSession($idSession, $date_session, $heure_debut, $heure_fin, $lieux, $date_limite, $nbmax)
+{
+    $connexion = obtenirConnexion();
+
+    try {
+        $sql = "UPDATE sessionformations SET date_session = :date_session, heure_debut = :heure_debut, heure_fin = :heure_fin, lieux = :lieux, date_limite = :date_limite, nb_max = :nbmax WHERE id_session = :idSession";
+        $stmt = $connexion->prepare($sql);
+        $stmt->bindParam(':idSession', $idSession, PDO::PARAM_INT);
+        $stmt->bindParam(':date_session', $date_session);
+        $stmt->bindParam(':heure_debut', $heure_debut);
+        $stmt->bindParam(':heure_fin', $heure_fin);
+        $stmt->bindParam(':lieux', $lieux);
+        $stmt->bindParam(':date_limite', $date_limite);
+        $stmt->bindParam(':nbmax', $nbmax);
+        $stmt->execute();
+    } catch (PDOException $e) {
+        throw new Exception("Erreur PDO lors de la modification de la session : " . $e->getMessage());
+    }
+}
+
+/**
+ * @param $idFormation
+ * @param $libelle
+ * @param $cout
+ * @param $contenu
+ * @param $nb_place
+ * @param $id_domaine
+ * @return void
+ * @throws Exception
+ */
+function modifierFormation($idFormation, $libelle, $cout, $contenu, $nb_place, $id_domaine)
+{
+    $connexion = obtenirConnexion();
+
+    try {
+        $sql = "UPDATE formations SET libelle_formation = :libelle, cout = :cout, contenu = :contenu, nb_place = :nb_place, id_domaine = :id_domaine WHERE id_formation = :idFormation";
+        $stmt = $connexion->prepare($sql);
+        $stmt->bindParam(':idFormation', $idFormation, PDO::PARAM_INT);
+        $stmt->bindParam(':libelle', $libelle);
+        $stmt->bindParam(':cout', $cout);
+        $stmt->bindParam(':contenu', $contenu);
+        $stmt->bindParam(':nb_place', $nb_place);
+        $stmt->bindParam(':id_domaine', $id_domaine);
+        $stmt->execute();
+    } catch (PDOException $e) {
+        throw new Exception("Erreur PDO lors de la modification de la formation : " . $e->getMessage());
+    }
+}
+
+/**
+ * @param $idformation
+ * @return false|mixed
+ */
+function getFormationDetails($idformation)
+{
+    $connexion = obtenirConnexion();
+
+    try {
+        $query = "SELECT * FROM formations WHERE id_formation = ?";
+        $stmt = $connexion->prepare($query);
+        $stmt->execute([$idformation]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        // Loguer l'erreur dans un fichier de logs par exemple
+        error_log("Erreur PDO lors de la récupération des détails de la formation : " . $e->getMessage());
+        return false;
+    }
+
+}
+
 //creation_user("Ferrer", "Gabriel", "gabfer258@gmail.com", "Azerty31", "B", "Venez comme vous-etes");
 //creation_user("Doumbia", "Bamody", "d.bamody28@gmail.com", "Azerty31", "A", "Club de ping pong");
 
