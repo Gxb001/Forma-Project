@@ -12,7 +12,6 @@
 include_once "Functions/functions.php"
 ?>
 <?php
-include 'includes/navbar.html.php';
 if ((isset($_SESSION['user']) && $_SESSION['role'] != "A") || !isset($_SESSION['user'])) {
     header("Location: accueil.html.php");
     exit;

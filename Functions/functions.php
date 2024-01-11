@@ -143,9 +143,15 @@ function creerNouvelleSession($date_session, $heure_debut, $heure_fin, $lieux, $
         // Exécution de la requête avec les valeurs liées
         $stmt->execute([$date_session, $heure_debut, $heure_fin, $lieux, $date_limite, $id_formation, $nbmax]);
 
-        echo "Nouvelle session créée avec succès.";
+        // Récupérer l'ID de la session nouvellement créée
+        $idNouvelleSession = $connexion->lastInsertId();
+
+        // Retourner l'ID de la session
+        return $idNouvelleSession;
     } catch (PDOException $e) {
+        // Gérer les erreurs
         echo "Erreur PDO : " . $e->getMessage();
+        return null; // Ou une autre valeur pour indiquer une erreur
     }
 }
 
@@ -593,6 +599,22 @@ function supprimerFormationEtSessions($idFormation)
         // Commencer une transaction
         $connexion->beginTransaction();
 
+        // Récupérer les ID des sessions associées à la formation
+        $sqlSessionsIds = "SELECT id_session FROM sessionformations WHERE id_formation = :idFormation";
+        $stmtSessionsIds = $connexion->prepare($sqlSessionsIds);
+        $stmtSessionsIds->bindParam(':idFormation', $idFormation, PDO::PARAM_INT);
+        $stmtSessionsIds->execute();
+        $sessionsIds = $stmtSessionsIds->fetchAll(PDO::FETCH_COLUMN);
+
+        // Supprimer les intervenants associés à ces sessions dans la table 'intervient'
+        foreach ($sessionsIds as $sessionId) {
+            $sqlDeleteIntervient = "DELETE FROM intervient WHERE id_session = :idSession";
+            $stmtDeleteIntervient = $connexion->prepare($sqlDeleteIntervient);
+            $stmtDeleteIntervient->bindParam(':idSession', $sessionId, PDO::PARAM_INT);
+            $stmtDeleteIntervient->execute();
+            echo "Intervenants de la session $sessionId supprimés avec succès.";
+        }
+
         // Supprimer toutes les sessions associées à la formation
         $sqlSessions = "DELETE FROM sessionformations WHERE id_formation = :idFormation";
         $stmtSessions = $connexion->prepare($sqlSessions);
@@ -650,12 +672,12 @@ function getSessionsByFormation($idFormation): array
  * @return void
  * @throws Exception
  */
-function modifierSession($idSession, $date_session, $heure_debut, $heure_fin, $lieux, $date_limite, $nbmax)
+function modifierSession($idSession, $date_session, $heure_debut, $heure_fin, $lieux, $date_limite, $nbmax, $id_formation)
 {
     $connexion = obtenirConnexion();
 
     try {
-        $sql = "UPDATE sessionformations SET date_session = :date_session, heure_debut = :heure_debut, heure_fin = :heure_fin, lieux = :lieux, date_limite = :date_limite, nb_max = :nbmax WHERE id_session = :idSession";
+        $sql = "UPDATE sessionformations SET date_session = :date_session, heure_debut = :heure_debut, heure_fin = :heure_fin, lieux = :lieux, date_limite = :date_limite, nb_max = :nbmax, id_formation = :id_formation WHERE id_session = :idSession";
         $stmt = $connexion->prepare($sql);
         $stmt->bindParam(':idSession', $idSession, PDO::PARAM_INT);
         $stmt->bindParam(':date_session', $date_session);
@@ -664,6 +686,7 @@ function modifierSession($idSession, $date_session, $heure_debut, $heure_fin, $l
         $stmt->bindParam(':lieux', $lieux);
         $stmt->bindParam(':date_limite', $date_limite);
         $stmt->bindParam(':nbmax', $nbmax);
+        $stmt->bindParam(':id_formation', $id_formation);
         $stmt->execute();
     } catch (PDOException $e) {
         throw new Exception("Erreur PDO lors de la modification de la session : " . $e->getMessage());
@@ -720,6 +743,84 @@ function getFormationDetails($idformation)
     }
 
 }
+
+/**
+ * @param $nom
+ * @param $prenom
+ * @return void
+ */
+function createIntervenant($nom, $prenom)
+{
+    $connexion = obtenirConnexion();
+    $sql = "INSERT INTO intervenants (nom, prenom) VALUES ('$nom', '$prenom')";
+
+    try {
+        // Exécute la requête SQL
+        $connexion->exec($sql);
+
+        // Récupère l'ID de l'intervenant nouvellement créé
+        $idIntervenant = $connexion->lastInsertId();
+
+        // Retourne l'ID de l'intervenant
+        return $idIntervenant;
+    } catch (PDOException $e) {
+
+        echo "Error: " . $e->getMessage();
+        return null;
+    } finally {
+        $connexion = null;
+    }
+}
+
+
+/**
+ * @param $id_intervenant
+ * @param $id_session
+ * @return void
+ */
+function intervient($id_intervenant, $id_session)
+{
+    $connexion = obtenirConnexion();
+    $sql = "INSERT INTO intervient (id_intervenant, id_session) VALUES ('$id_intervenant', '$id_session')";
+
+    try {
+        $connexion->exec($sql);
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
+    } finally {
+        $connexion = null;
+    }
+}
+
+/**
+ * @param $idSession
+ * @return array|false
+ * @throws Exception
+ */
+function getIntervenantsSession($idSession)
+{
+    $connexion = obtenirConnexion();
+
+    try {
+        // Requête pour récupérer les intervenants d'une session
+        $sql = "SELECT intervenants.id_intervenant, intervenants.nom, intervenants.prenom
+                FROM intervenants
+                INNER JOIN intervient ON intervenants.id_intervenant = intervient.id_intervenant
+                WHERE intervient.id_session = :idSession";
+
+        $stmt = $connexion->prepare($sql);
+        $stmt->bindParam(':idSession', $idSession, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Récupérer les résultats de la requête
+        $resultats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return $resultats;
+    } catch (PDOException $e) {
+        throw new Exception("Erreur PDO lors de la récupération des intervenants de la session : " . $e->getMessage());
+    }
+}
+
 
 //creation_user("Ferrer", "Gabriel", "gabfer258@gmail.com", "Azerty31", "B", "Venez comme vous-etes");
 //creation_user("Doumbia", "Bamody", "d.bamody28@gmail.com", "Azerty31", "A", "Club de ping pong");
