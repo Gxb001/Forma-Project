@@ -21,7 +21,6 @@ if (isset($_GET['id_formation'])) {
         echo json_encode(array('error' => 'Erreur lors de la récupération des détails de la formation'));
     }
 } else {
-    // L'ID de la formation n'est pas fourni dans la requête
     header('Content-Type: application/json');
     echo json_encode(array('error' => 'ID de formation non fourni'));
 }
