@@ -1,0 +1,69 @@
+<style>
+    .c-img {
+        height: 480px;
+        object-fit: cover;
+        filter: brightness(0.8);
+    }
+
+    .c-item {
+        height: 100%;
+    }
+</style>
+<section id="defilement">
+    <!--CAROUSEL-->
+    <div class="carousel slide" data-bs-ride="carousel" id="hero-carousel">
+        <div class="carousel-indicators">
+            <button aria-current="true" aria-label="Slide 1" class="active" data-bs-slide-to="0"
+                    data-bs-target="#hero-carousel" type="button"></button>
+            <button aria-label="Slide 2" data-bs-slide-to="1" data-bs-target="#hero-carousel"
+                    type="button"></button>
+            <button aria-label="Slide 3" data-bs-slide-to="2" data-bs-target="#hero-carousel"
+                    type="button"></button>
+            <button aria-label="Slide 4" data-bs-slide-to="3" data-bs-target="#hero-carousel"
+                    type="button"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active c-item">
+                <img alt="1" class="d-block w-100 c-img" src="Medias/communication.jpg">
+                <div class="carousel-caption top-0 mt-4 d-none d-md-block">
+                    <p class="mt-5 fs-3 text-uppercase">Communication</p>
+                    <h1 class="display-1 fw-bolder text-capitalize">Formation en groupe</h1>
+                </div>
+            </div>
+            <div class="carousel-item c-item">
+                <img alt="2" class="d-block w-100 c-img" src="Medias/gestion.jpg">
+                <div class="carousel-caption top-0 mt-4 d-none d-md-block">
+                    <p class="mt-5 fs-3 text-uppercase">Gestion</p>
+                    <h1 class="display-1 fw-bolder text-capitalize">Gestion d'équipe</h1>
+                </div>
+            </div>
+            <div class="carousel-item c-item">
+                <img alt="3" class="d-block w-100 c-img" src="Medias/durable.jpg">
+                <div class="carousel-caption top-0 mt-4 d-none d-md-block">
+                    <p class="mt-5 fs-3 text-uppercase">Developpement durable</p>
+                    <h1 class="display-1 fw-bolder text-capitalize">Avenir de la planete</h1>
+                </div>
+            </div>
+            <div class="carousel-item c-item">
+                <img alt="4" class="d-block w-100 c-img" src="Medias/informatique.png">
+                <div class="carousel-caption top-0 mt-4 d-none d-md-block">
+                    <p class="mt-5 fs-3 text-uppercase">Informatique</p>
+                    <h1 class="display-1 fw-bolder text-capitalize">Cours d'informatique</h1>
+                </div>
+            </div>
+        </div>
+        <article>
+            <!--CAROUSEL BUTTONS-->
+            <button class="carousel-control-prev" data-bs-slide="prev" data-bs-target="#hero-carousel"
+                    type="button">
+                <span aria-hidden="true" class="carousel-control-prev-icon"></span>
+                <span class="visually-hidden">Precedent</span>
+            </button>
+            <button class="carousel-control-next" data-bs-slide="next" data-bs-target="#hero-carousel"
+                    type="button">
+                <span aria-hidden="true" class="carousel-control-next-icon"></span>
+                <span class="visually-hidden">Suivant</span>
+            </button>
+        </article>
+    </div>
+</section>

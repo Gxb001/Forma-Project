@@ -1,0 +1,21 @@
+body, h1, h2, h3, p {
+    margin: 0;
+    padding: 0;
+}
+
+
+.welcome-section {
+    text-align: center;
+    padding: 20px;
+}
+
+.welcome-section h2 {
+    color: #007BFF;
+    margin-bottom: 10px;
+}
+
+.welcome-section p {
+    color: #555;
+    font-size: 1.2em;
+    line-height: 1.5;
+}
