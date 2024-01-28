@@ -188,7 +188,7 @@ include 'Functions/functions.php';
                         '<p>Lieu: ' + session.lieux + '</p>' +
                         '<p>Nombre de place(s): ' + placerestantes + '/' + session.nb_max + '</p>' +
                         '<p class="statut-session">Statut: ' + statut + '</p>' +
-                        '<button class="btn-inscrire-session" data-id-session="' + session.id_session + '" data-id-utilisateur="' + <?php echo $_SESSION['id']; ?> +'">S\'inscrire</button>' +
+                        '<button class="btn-inscrire-session rounded-0" data-id-session="' + session.id_session + '" data-id-utilisateur="' + <?php echo $_SESSION['id']; ?> +'">S\'inscrire</button>' +
                         '<hr>' +
                         '</div>';
                 }

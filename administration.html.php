@@ -509,7 +509,7 @@ if ((isset($_SESSION['user']) && $_SESSION['role'] != "A") || !isset($_SESSION['
     function loadformsession() {
         const selectedSessionId = $('#selectSessionUpdate').val();
 
-        if (selectedSessionId) {
+        if (selectedSessionId && selectedSessionId !== "N/A") {
             $.ajax({
                 url: 'Functions/getSessionDetails.php',
                 method: 'GET',
@@ -538,6 +538,8 @@ if ((isset($_SESSION['user']) && $_SESSION['role'] != "A") || !isset($_SESSION['
             });
         } else {
             afficherMessage("Veuillez sélectionner une session à modifier.");
+            const formupdsess = document.getElementById("formSessionUpdate");
+            formupdsess.reset();
         }
     }
 
