@@ -591,7 +591,7 @@ function supprimerSession($idSession)
  * @return void
  * @throws Exception
  */
-function supprimerFormationEtSessions($idFormation)
+function supprimerFormationEtSessions($idFormation)//TODO modifier cette fonction pour adapter le changement de la base de données, place formation dans sessionformation
 {
     $connexion = obtenirConnexion();
 

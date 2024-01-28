@@ -142,6 +142,7 @@ if ((isset($_SESSION['user']) && $_SESSION['role'] != "A") || !isset($_SESSION['
             </div>
             <div class="mb-3">
                 <label for="nb_place" class="form-label">Nombre de places:</label>
+                <!-- TODO plus besoins de ça car ça se gere dans les sessions-->
                 <input type="number" class="form-control" name="nb_place" required>
             </div>
             <div class="mb-3">

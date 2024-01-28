@@ -80,7 +80,7 @@ include 'Functions/functions.php';
             echo '<p class="card-text">Coût : ' . $formation['cout'] . '€ par participant</p>';
             echo '<p class="card-text">Contenu : ' . $formation['contenu'] . '</p>';
             echo '<p class="card-text">Domaine : ' . $domaine . '</p>';
-            echo '<p class="card-text">Nombre de places : ' . $formation['nb_place'] . '</p>';
+            echo '<p class="card-text">Nombre de places : ' . $formation['nb_place'] . '</p>';// TODO mettre le nombre de place restante en additionant les places de sessions de la formation
 
             if (isset($_SESSION['user'])) {
                 echo '<button class="btn btn-success" data-id="' . $formation["id_formation"] . '">S\'inscrire</button>';
